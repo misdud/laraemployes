@@ -11,6 +11,24 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        //---------------
+        //boot sequence:  1, 2 and ....
+        //---------------
+
+        //default
         // $this->call(UsersTableSeeder::class);
+
+        // 1 first-boot  PositionSeeder
+        //$this->call(PositionSeeder::class);
+
+        // 2 second-boot  HeadEnterpriseSeeder
+        //$this->call(HeadEnterpriseSeeder::class);
+
+        //3  DirectorSeeder
+        //$this->call(DirectorSeeder::class);
+
+        // 4 DeputySeeder
+        $this->call(DeputySeeder ::class);
+
     }
 }

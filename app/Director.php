@@ -18,8 +18,12 @@ class Director extends Model
         return $this->belongsTo('Add\HeadEnterp', 'id_head', 'id');
     }
 
-    public function positions(){
-        return $this->hasMany('App\Position', 'id_positiond', 'id');
+    public function position(){
+        return $this->belongsTo('App\Position', 'id_positiond', 'id');
+    }
+
+    public function deputys(){
+        return $this->hasMany('App\Deputy', 'id_director', 'id');
     }
 
 }

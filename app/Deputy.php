@@ -19,9 +19,12 @@ class Deputy extends Model
         return $this->belongsTo('App\Director', 'id_director', 'id');
     }
 
-    public function positions(){
-        return $this->hasMany('App\Position', 'id_positionde', 'id');
+    public function position(){
+        return $this->belongsTo('App\Position', 'id_positionde', 'id');
     }
 
+    public function departments(){
+        return $this->hasMany('App\Demartment', 'id_deputys', 'id');
+    }
 
 }

@@ -11,6 +11,14 @@
 |
 */
 
+use App\Deputy;
+
 Route::get('/', function () {
     return view('welcome');
 });
+ Route::get('/test', function (){
+     $deputys = App\Deputy::pluck('id')->all();
+
+     dump($deputys);
+     exit();
+ });

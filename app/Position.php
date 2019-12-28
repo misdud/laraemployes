@@ -13,11 +13,11 @@ class Position extends Model
     ];
 
     public function headEnters(){
-        return $this->belongsTo('App\HeadEnterp', 'id_position', 'id');
+        return $this->hasMany('App\HeadEnterp', 'id_position', 'id');
     }
 
     public function directors(){
-        return $this->belongsTo('App\Director', 'id_positiond', 'id');
+        return $this->hasMany('App\Director', 'id_positiond', 'id');
     }
 
 

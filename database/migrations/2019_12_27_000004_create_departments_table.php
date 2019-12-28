@@ -30,7 +30,7 @@ class CreateDepartmentsTable extends Migration
 
 
             $table->foreign('id_deputys', 'id_deputys_idx')
-                ->references('id_positionde')->on('deputys')
+                ->references('id')->on('deputys')
                 ->onDelete('restrict')
                 ->onUpdate('restrict');
         });

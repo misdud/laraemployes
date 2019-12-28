@@ -13,8 +13,11 @@ class HeadEnterp extends Model
     ];
 
     public function position(){
-        return $this->hasMany('App\Position', 'id_position', 'id');
+        return $this->belongsTo('App\Position', 'id_position', 'id');
     }
 
+    public function directors(){
+        return $this->hasMany('App\Director', 'id_head', 'id');
+    }
 
 }

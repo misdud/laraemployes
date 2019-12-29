@@ -37,6 +37,6 @@ class DatabaseSeeder extends Seeder
          // $this->call(EmployeSeeder::class);
 
         // 7 HeadDepartamentSeeder
-          $this->call(HeadDepartamentSeeder::class);
+         // $this->call(HeadDepartamentSeeder::class);
     }
 }

@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\Http\Resources\HeadEnterpResource;
+use App\HeadEnterp;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +18,14 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+//Route::get('/supervisor', function(){
+//     return  HeadEnterpResource::collection(HeadEnterp::with('position')->get());
+//     //return  new HeadEnterpResource(HeadEnterp::all());
+//})->name('head_enterp');
+
+Route::resource('/supervisor', 'Api\HeadEnterpController')
+    ->only(['index', 'show']);
+
+Route::resource('/employees', 'Api\EmployeController');

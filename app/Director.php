@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Director extends Model
 {
-    //protected $table = 'directors';
+    protected $table = 'directors';
 
     public $timestamps = false;
 

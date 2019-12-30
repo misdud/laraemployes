@@ -53,25 +53,43 @@
             </tr>
             </thead>
             <tbody>
-            <tr v-for="{ name, position, employment, department, salary_position, ratio, id } in emplouees ">
-                <td>{{ id }}</td>
-                <td>{{ name }}</td>
-                <td>{{ position }}</td>
-                <td>{{ employment}}</td>
-                <td>{{ salary_position * ratio }}</td>
-                <td>{{ department}}</td>
-                <td>фото</td>
+            <tr v-for="(item, index) in emplouees.data">
+                <td>{{ index+1 }}</td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.position }}</td>
+                <td>{{ item.employment}}</td>
+                <td>{{ item.salary_position * item.ratio }}</td>
+                <td>{{ item.department}}</td>
+                 <td>{{ item.id }}</td>
                 <td><button type="button" class="btn btn-outline-secondary">
                     Изменить</button></td>
             </tr>
             </tbody>
         </table>
+                        
+        <div class="row">
+        	<div class="col-md-8">
+        		<nav>
+        			<ul class="pagination">
+<li v-bind:class="{disabled:!emplouees.links.first}" class="page-item"><a href="#" v-on:click="fetchData(emplouees.links.first)" class="page-link">&laquo;</a></li>
 
-        <div class="pagination-centered" >
-            <button type="button" class="btn btn-outline-secondary" :disabled="! prevPage" @click.prevent="goToPrev"> < </button>
-            <span class="pt-2 ml-2 mr-2"> {{ paginatonCount }} </span>
-            <button type="button" class="btn btn-outline-secondary" :disabled="! nextPage" @click.prevent="goToNext"> > </button>
-        </div>
+<li v-bind:class="{disabled:!emplouees.links.prev}" class="page-item"><a href="#" v-on:click="fetchData(emplouees.links.prev)" class="page-link">&lt</a></li>
+
+
+<li v-bind:class="{disabled:!emplouees.links.next}" class="page-item"><a href="#" v-on:click="fetchData(emplouees.links.next)" class="page-link">&gt</a></li>
+
+<li v-bind:class="{disabled:!emplouees.links.last}" class="page-item"><a href="#" v-on:click="fetchData(emplouees.links.last)" class="page-link">&raquo;</a></li>
+        			</ul>
+        		</nav>
+        	
+        	</div>
+        	
+        	</div>
+
+        	<div class="col-md-4">
+        		Страница : {{ emplouees.meta.from }} - {{ emplouees.meta.to }}
+        		Всего: {{ emplouees.meta.total}}
+		</div>
     </div>
 </template>
 
@@ -93,55 +111,15 @@
         name: 'Hierarchyt',
         data() {
             return {
-                sort:'',
                 erorr: null,
                 emplouees: null,
-                meta: null,
-                links: {
-                    first: null,
-                    last: null,
-                    next: null,
-                    prev: null,
-                },
+                pagination:{}
 
-            };
+            }
         },
         computed: {
-            nextPage() {
-                if (! this.meta || this.meta.current_page === this.meta.last_page) {
-                    return;
-                }
-                return this.meta.current_page + 1;
-            },
-            prevPage() {
-                if (! this.meta || this.meta.current_page === 1) {
-                    return;
-                }
-                return this.meta.current_page - 1;
-            },
-            paginatonCount() {
-                if (! this.meta) {
-                    return;
-                }
 
-                const { current_page, last_page } = this.meta;
-
-                return `${current_page} of ${last_page}`;
-            },
         },
-        beforeRouteEnter (to, from, next) {
-            getEmploue(to.query.page, (err, data) => {
-                next(vm => vm.setData(err, data));
-            });
-        },
-        beforeRouteUpdate (to, from, next) {
-            this.users = this.links = this.meta = null
-            getEmploue(to.query.page, (err, data) => {
-                this.setData(err, data);
-                next();
-            });
-        },
-
         created() {
             this.fetchData();
         },
@@ -149,14 +127,17 @@
 
         },
         methods: {
-            fetchData() {
+            fetchData(pagi) {
                 this.error = this.emplouees = null;
+                pagi = pagi || '/api/employees';
                 axios
-                    .get('/api/employees')
+                    .get(pagi)
                     .then(response=>{
-                        this.emplouees = response.data.data;
+                        this.emplouees = response.data;
+      
                     }).catch(error => {
                     this.error = error.response.data.message || error.message;
+   
                 });
             },
             sortFioData() {

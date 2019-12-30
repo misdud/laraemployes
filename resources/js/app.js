@@ -13,9 +13,10 @@ import App from './components/App'
 import Hierarchyt from './components/hierarchy'
 import Employees from './components/employees'
 
-import route from './route'
+//import route from './route'
 
 Vue.use(VueRouter)
+
 
 const router = new VueRouter({
     mode: 'history',

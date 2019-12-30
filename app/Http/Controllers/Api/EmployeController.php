@@ -21,13 +21,14 @@ class EmployeController extends Controller
         $positionHeadDepartament = Position::select('id')
             ->where('name_position', 'Начальник отдела')->get();
 
-         return  EmployeResoutse::collection(
-                 Employe::with('position', 'department')
-                     ->where('id_positione','<>',$positionHeadDepartament)
-                     ->orderBy('full_name')
-                     ->paginate(5)
-         );
+          $employes = Employe::with('position', 'department')
+              ->where('id_positione','<>',$positionHeadDepartament)
+              ->orderBy('full_name')
+              ->paginate(5);
 
+         return  EmployeResoutse::collection($employes)->additional(['meta'=>[
+         'Api_base_url' => url('/')
+         ]]);
 
     }
 

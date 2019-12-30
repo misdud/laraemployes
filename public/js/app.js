@@ -1942,6 +1942,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 
 var getEmploue = function getEmploue(page, callback) {
@@ -1961,22 +1963,7 @@ var getEmploue = function getEmploue(page, callback) {
   name: 'Hierarchyt',
   data: function data() {
     return {
-      sortBy: 'age',
-      sortDesc: false,
-      fields: [{
-        key: 'name',
-        sortable: true
-      }, {
-        key: 'position',
-        sortable: true
-      }, {
-        key: 'employment',
-        sortable: true
-      }, {
-        key: 'department',
-        sortable: false
-      }],
-      loading: false,
+      sort: '',
       erorr: null,
       emplouees: null,
       meta: null,
@@ -2040,13 +2027,20 @@ var getEmploue = function getEmploue(page, callback) {
       var _this2 = this;
 
       this.error = this.emplouees = null;
-      this.loading = true;
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/employees').then(function (response) {
-        _this2.loading = false;
         _this2.emplouees = response.data.data;
       })["catch"](function (error) {
-        _this2.loading = false;
         _this2.error = error.response.data.message || error.message;
+      });
+    },
+    sortFioData: function sortFioData() {
+      var _this3 = this;
+
+      this.error = this.emplouees = null;
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/employees/sortfio').then(function (response) {
+        _this3.emplouees = response.data.data;
+      })["catch"](function (error) {
+        _this3.error = error.response.data.message || error.message;
       });
     },
     goToNext: function goToNext() {
@@ -37569,7 +37563,7 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _c("h1", [_vm._v("Vue Main ")]),
+    _c("h1", [_vm._v("Vue\\Laravel (SPA)")]),
     _vm._v(" "),
     _c(
       "p",
@@ -37585,7 +37579,7 @@ var render = function() {
       1
     ),
     _vm._v(" "),
-    _c("div", { staticClass: "container" }, [_c("router-view")], 1)
+    _c("div", { staticClass: "container-fluid" }, [_c("router-view")], 1)
   ])
 }
 var staticRenderFns = []
@@ -37615,14 +37609,6 @@ var render = function() {
     _vm._v(" "),
     _c("br"),
     _vm._v(" "),
-    _vm.loading
-      ? _c(
-          "div",
-          { staticClass: "spinner-border", attrs: { role: "status" } },
-          [_c("span", { staticClass: "sr-only" }, [_vm._v("Loading...")])]
-        )
-      : _vm._e(),
-    _vm._v(" "),
     _vm.error
       ? _c("div", { staticClass: "error" }, [
           _c("p", [_vm._v(_vm._s(_vm.error))]),
@@ -37648,7 +37634,34 @@ var render = function() {
     _vm._v(" "),
     _vm.emplouees
       ? _c("table", { staticClass: "table table-hover" }, [
-          _vm._m(1),
+          _c("thead", { staticClass: "thead-dark" }, [
+            _c("tr", [
+              _c("th", { attrs: { scope: "col" } }, [_vm._v("id")]),
+              _vm._v(" "),
+              _c("th", { attrs: { scope: "col" } }, [
+                _vm._v("ФИО "),
+                _c(
+                  "a",
+                  { attrs: { href: "#" }, on: { click: _vm.sortFioData } },
+                  [_vm._v("⇓ ")]
+                )
+              ]),
+              _vm._v(" "),
+              _vm._m(1),
+              _vm._v(" "),
+              _vm._m(2),
+              _vm._v(" "),
+              _vm._m(3),
+              _vm._v(" "),
+              _vm._m(4),
+              _vm._v(" "),
+              _c("th", { attrs: { scope: "col" } }, [_vm._v("Фото")]),
+              _vm._v(" "),
+              _c("th", { attrs: { scope: "col" } }, [_vm._v("Действие")])
+            ]),
+            _vm._v(" "),
+            _vm._m(5)
+          ]),
           _vm._v(" "),
           _c(
             "tbody",
@@ -37659,8 +37672,10 @@ var render = function() {
               var department = ref.department
               var salary_position = ref.salary_position
               var ratio = ref.ratio
-              var headDepartment = ref.headDepartment
+              var id = ref.id
               return _c("tr", [
+                _c("td", [_vm._v(_vm._s(id))]),
+                _vm._v(" "),
                 _c("td", [_vm._v(_vm._s(name))]),
                 _vm._v(" "),
                 _c("td", [_vm._v(_vm._s(position))]),
@@ -37671,7 +37686,9 @@ var render = function() {
                 _vm._v(" "),
                 _c("td", [_vm._v(_vm._s(department))]),
                 _vm._v(" "),
-                _vm._m(2, true)
+                _c("td", [_vm._v("фото")]),
+                _vm._v(" "),
+                _vm._m(6, true)
               ])
             }),
             0
@@ -37733,148 +37750,159 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("thead", { staticClass: "thead-dark" }, [
-      _c("tr", [
-        _c("th", { attrs: { scope: "col" } }, [
-          _vm._v("ФИО"),
-          _c("a", [_vm._v("◊")])
-        ]),
-        _vm._v(" "),
-        _c("th", { attrs: { scope: "col" } }, [
-          _vm._v("Должность"),
-          _c("a", [_vm._v("◊")])
-        ]),
-        _vm._v(" "),
-        _c("th", { attrs: { scope: "col" } }, [
-          _vm._v("Дата приёма "),
-          _c("a", [_vm._v("◊")])
-        ]),
-        _vm._v(" "),
-        _c("th", { attrs: { scope: "col" } }, [
-          _vm._v("Размер з\\п"),
-          _c("a", [_vm._v("◊")])
-        ]),
-        _vm._v(" "),
-        _c("th", { attrs: { scope: "col" } }, [
-          _vm._v("Отдел"),
-          _c("a", [_vm._v("◊")])
-        ]),
-        _vm._v(" "),
-        _c("th", { attrs: { scope: "col" } }, [_vm._v("Действие")])
+    return _c("th", { attrs: { scope: "col" } }, [
+      _vm._v("Должность "),
+      _c("a", { attrs: { href: "#" } }, [_vm._v("⇓ ")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("th", { attrs: { scope: "col" } }, [
+      _vm._v("Дата приёма "),
+      _c("a", { attrs: { href: "#" } }, [_vm._v("⇓ ")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("th", { attrs: { scope: "col" } }, [
+      _vm._v("Размер з\\п "),
+      _c("a", { attrs: { href: "#" } }, [_vm._v("⇓ ")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("th", { attrs: { scope: "col" } }, [
+      _vm._v("Отдел "),
+      _c("a", { attrs: { href: "#" } }, [_vm._v("⇓ ")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("tr", [
+      _c("td", { staticClass: "bg-secondary" }),
+      _vm._v(" "),
+      _c("td", { staticClass: "bg-secondary" }, [
+        _c("form", { staticClass: "form-inline" }, [
+          _c("input", {
+            staticClass: "form-control mr-sm-2 w-50 border-right-1",
+            attrs: {
+              width: "7",
+              type: "search",
+              placeholder: "Введите фио",
+              "aria-label": "Search"
+            }
+          }),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-outline-success ",
+              attrs: { type: "submit" }
+            },
+            [_vm._v("Найти")]
+          )
+        ])
       ]),
       _vm._v(" "),
-      _c("tr", [
-        _c("td", [
-          _c("form", { staticClass: "form-inline" }, [
-            _c("input", {
-              staticClass: "form-control mr-sm-2",
-              attrs: {
-                width: "7",
-                type: "search",
-                placeholder: "Введите фио",
-                "aria-label": "Search"
-              }
-            }),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-outline-success mt-2",
-                attrs: { type: "submit" }
-              },
-              [_vm._v("Найти")]
-            )
-          ])
-        ]),
-        _vm._v(" "),
-        _c("td", [
-          _c("form", { staticClass: "form-inline" }, [
-            _c("input", {
-              staticClass: "form-control mr-sm-2",
-              attrs: {
-                type: "search",
-                placeholder: "Введите должность",
-                "aria-label": "Search"
-              }
-            }),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-outline-success mt-2",
-                attrs: { type: "submit" }
-              },
-              [_vm._v("Найти")]
-            )
-          ])
-        ]),
-        _vm._v(" "),
-        _c("td", [
-          _c("form", { staticClass: "form-inline" }, [
-            _c("input", {
-              staticClass: "form-control mr-sm-2",
-              attrs: {
-                type: "date",
-                placeholder: "Введите дату",
-                "aria-label": "Search"
-              }
-            }),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-outline-success mt-2",
-                attrs: { type: "submit" }
-              },
-              [_vm._v("Найти")]
-            )
-          ])
-        ]),
-        _vm._v(" "),
-        _c("td", [
-          _c("form", { staticClass: "form-inline" }, [
-            _c("input", {
-              staticClass: "form-control mr-sm-2",
-              attrs: {
-                type: "search",
-                placeholder: "Введите сумму",
-                "aria-label": "Search"
-              }
-            }),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-outline-success mt-2",
-                attrs: { type: "submit" }
-              },
-              [_vm._v("Найти")]
-            )
-          ])
-        ]),
-        _vm._v(" "),
-        _c("td", [
-          _c("form", { staticClass: "form-inline" }, [
-            _c("input", {
-              staticClass: "form-control mr-sm-2",
-              attrs: {
-                type: "search",
-                placeholder: "Введите отдел",
-                "aria-label": "Search"
-              }
-            }),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-outline-success mt-2",
-                attrs: { type: "submit" }
-              },
-              [_vm._v("Найти")]
-            )
-          ])
+      _c("td", { staticClass: "bg-secondary" }, [
+        _c("form", { staticClass: "form-inline" }, [
+          _c("input", {
+            staticClass: "form-control mr-sm-2 w-50",
+            attrs: {
+              type: "search",
+              placeholder: "Введите должность",
+              "aria-label": "Search"
+            }
+          }),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-outline-success ",
+              attrs: { type: "submit" }
+            },
+            [_vm._v("Найти")]
+          )
         ])
-      ])
+      ]),
+      _vm._v(" "),
+      _c("td", { staticClass: "bg-secondary" }, [
+        _c("form", { staticClass: "form-inline" }, [
+          _c("input", {
+            staticClass: "form-control mr-sm-2 w-50",
+            attrs: {
+              type: "date",
+              placeholder: "Введите дату",
+              "aria-label": "Search"
+            }
+          }),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-outline-success ",
+              attrs: { type: "submit" }
+            },
+            [_vm._v("Найти")]
+          )
+        ])
+      ]),
+      _vm._v(" "),
+      _c("td", { staticClass: "bg-secondary" }, [
+        _c("form", { staticClass: "form-inline " }, [
+          _c("input", {
+            staticClass: "form-control  mr-sm-2 w-50",
+            attrs: {
+              type: "number",
+              placeholder: "Введите сумму",
+              "aria-label": "Search"
+            }
+          }),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-outline-success ",
+              attrs: { type: "submit" }
+            },
+            [_vm._v("Найти")]
+          )
+        ])
+      ]),
+      _vm._v(" "),
+      _c("td", { staticClass: "bg-secondary" }, [
+        _c("form", { staticClass: "form-inline" }, [
+          _c("input", {
+            staticClass: "form-control mr-sm-2 w-50",
+            attrs: {
+              type: "search",
+              placeholder: "Введите отдел",
+              "aria-label": "Search"
+            }
+          }),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-outline-success ",
+              attrs: { type: "submit" }
+            },
+            [_vm._v("Найти")]
+          )
+        ])
+      ]),
+      _vm._v(" "),
+      _c("td", { staticClass: "bg-secondary" }),
+      _vm._v(" "),
+      _c("td", { staticClass: "bg-secondary" })
     ])
   },
   function() {
@@ -53080,12 +53108,11 @@ module.exports = function(module) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm.js");
-/* harmony import */ var _components_App__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/App */ "./resources/js/components/App.vue");
-/* harmony import */ var _components_hierarchy__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/hierarchy */ "./resources/js/components/hierarchy.vue");
-/* harmony import */ var _components_employees__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/employees */ "./resources/js/components/employees.vue");
+/* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm.js");
+/* harmony import */ var _components_App__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/App */ "./resources/js/components/App.vue");
+/* harmony import */ var _components_hierarchy__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/hierarchy */ "./resources/js/components/hierarchy.vue");
+/* harmony import */ var _components_employees__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/employees */ "./resources/js/components/employees.vue");
+/* harmony import */ var _route__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./route */ "./resources/js/route.js");
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -53099,23 +53126,23 @@ window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.
 
 
 
-vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]);
-var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
+Vue.use(vue_router__WEBPACK_IMPORTED_MODULE_0__["default"]);
+var router = new vue_router__WEBPACK_IMPORTED_MODULE_0__["default"]({
   mode: 'history',
   routes: [{
     path: '/',
     name: 'hierarchy',
-    component: _components_hierarchy__WEBPACK_IMPORTED_MODULE_3__["default"]
+    component: _components_hierarchy__WEBPACK_IMPORTED_MODULE_2__["default"]
   }, {
     path: '/employees',
     name: 'employees',
-    component: _components_employees__WEBPACK_IMPORTED_MODULE_4__["default"]
+    component: _components_employees__WEBPACK_IMPORTED_MODULE_3__["default"]
   }]
 });
-var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
+var app = new Vue({
   el: '#app',
   components: {
-    App: _components_App__WEBPACK_IMPORTED_MODULE_2__["default"]
+    App: _components_App__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
   router: router
 });
@@ -53371,6 +53398,47 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_hierarchy_vue_vue_type_template_id_2fa7e9fa___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
+
+/***/ }),
+
+/***/ "./resources/js/route.js":
+/*!*******************************!*\
+  !*** ./resources/js/route.js ***!
+  \*******************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+var routes = __webpack_require__(/*! ./routes.json */ "./resources/js/routes.json");
+
+/* harmony default export */ __webpack_exports__["default"] = (function () {
+  var arg = Array.prototype.slice.call(arguments);
+  var name = args.shift();
+
+  if (routes[name] === undefined) {
+    console.log('Error');
+  } else {
+    return '/' + routes[name].split('/').map(function (str) {
+      if (str[0] == '{') {
+        return args.shift();
+      } else {
+        return str;
+      }
+    }).json('/');
+  }
+});
+
+/***/ }),
+
+/***/ "./resources/js/routes.json":
+/*!**********************************!*\
+  !*** ./resources/js/routes.json ***!
+  \**********************************/
+/*! exports provided: debugbar.openhandler, debugbar.clockwork, debugbar.telescope, debugbar.assets.css, debugbar.assets.js, debugbar.cache.delete, , supervisor.index, supervisor.show, employees.index, employees.create, employees.store, employees.show, employees.edit, employees.update, employees.destroy, login, logout, register, password.request, password.email, password.reset, password.update, password.confirm, home, default */
+/***/ (function(module) {
+
+module.exports = JSON.parse("{\"debugbar.openhandler\":\"_debugbar/open\",\"debugbar.clockwork\":\"_debugbar/clockwork/{id}\",\"debugbar.telescope\":\"_debugbar/telescope/{id}\",\"debugbar.assets.css\":\"_debugbar/assets/stylesheets\",\"debugbar.assets.js\":\"_debugbar/assets/javascript\",\"debugbar.cache.delete\":\"_debugbar/cache/{key}/{tags?}\",\"\":\"password/confirm\",\"supervisor.index\":\"api/supervisor\",\"supervisor.show\":\"api/supervisor/{supervisor}\",\"employees.index\":\"api/employees\",\"employees.create\":\"api/employees/create\",\"employees.store\":\"api/employees\",\"employees.show\":\"api/employees/{employee}\",\"employees.edit\":\"api/employees/{employee}/edit\",\"employees.update\":\"api/employees/{employee}\",\"employees.destroy\":\"api/employees/{employee}\",\"login\":\"login\",\"logout\":\"logout\",\"register\":\"register\",\"password.request\":\"password/reset\",\"password.email\":\"password/email\",\"password.reset\":\"password/reset/{token}\",\"password.update\":\"password/reset\",\"password.confirm\":\"password/confirm\",\"home\":\"home\"}");
 
 /***/ }),
 

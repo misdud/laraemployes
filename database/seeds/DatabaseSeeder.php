@@ -12,7 +12,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         //---------------
-        //boot sequence:  1, 2 and ....
+        //boot sequence:  1, 2 and etc....
         //---------------
 
         //default
@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
         //$this->call(DepartmentSeeder::class);
 
         // 6 EmployeSeeder
-         // $this->call(EmployeSeeder::class);
+          //$this->call(EmployeSeeder::class);
 
         // 7 HeadDepartamentSeeder
          // $this->call(HeadDepartamentSeeder::class);

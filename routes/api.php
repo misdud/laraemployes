@@ -28,4 +28,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::resource('/supervisor', 'Api\HeadEnterpController')
     ->only(['index', 'show']);
 
+Route::get('/employees/sortfio', 'Api\EmployeController@sortFio');
 Route::resource('/employees', 'Api\EmployeController');

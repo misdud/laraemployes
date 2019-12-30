@@ -4,9 +4,6 @@
             <button type="button" class="btn btn-secondary btn-sm"> + Добавить сотрудника</button>
         </div>
         <br />
-        <div v-if="loading" class="spinner-border" role="status">
-            <span class="sr-only">Loading...</span>
-        </div>
 
         <div v-if="error" class="error">
             <p>{{ error }}</p>
@@ -18,47 +15,52 @@
         </div>
 
         <table class="table table-hover" v-if="emplouees" >
-
             <thead class="thead-dark">
             <tr>
-                <th scope="col">ФИО<a>&#9674;</a></th>
-                <th scope="col">Должность<a>&#9674;</a></th>
-                <th scope="col">Дата приёма <a>&#9674;</a></th>
-                <th scope="col">Размер з\п<a>&#9674;</a></th>
-                <th scope="col">Отдел<a>&#9674;</a></th>
+                <th scope="col">id</th>
+                <th scope="col">ФИО <a v-on:click="sortFioData" href="#" >&#8659; </a></th>
+                <th scope="col">Должность <a href="#">&#8659; </a></th>
+                <th scope="col">Дата приёма <a href="#">&#8659; </a></th>
+                <th scope="col">Размер з\п <a href="#">&#8659; </a></th>
+                <th scope="col">Отдел <a href="#">&#8659; </a></th>
+                <th scope="col">Фото</th>
                 <th scope="col">Действие</th>
             </tr>
             <tr>
-
-                <td><form class="form-inline">
-                    <input class="form-control mr-sm-2" width="7" type="search" placeholder="Введите фио" aria-label="Search">
-                    <button class="btn btn-outline-success mt-2" type="submit">Найти</button>
+                <td class="bg-secondary"></td>
+                <td class="bg-secondary"><form class="form-inline">
+                    <input class="form-control mr-sm-2 w-50 border-right-1" width="7" type="search" placeholder="Введите фио" aria-label="Search">
+                    <button class="btn btn-outline-success " type="submit">Найти</button>
                 </form></td>
-                <td><form class="form-inline">
-                    <input class="form-control mr-sm-2"  type="search" placeholder="Введите должность" aria-label="Search">
-                    <button class="btn btn-outline-success mt-2" type="submit">Найти</button>
+                <td class="bg-secondary"><form class="form-inline">
+                    <input class="form-control mr-sm-2 w-50"  type="search" placeholder="Введите должность" aria-label="Search">
+                    <button class="btn btn-outline-success " type="submit">Найти</button>
                 </form></td>
-                <td><form class="form-inline">
-                    <input class="form-control mr-sm-2"  type="date" placeholder="Введите дату" aria-label="Search">
-                    <button class="btn btn-outline-success mt-2" type="submit">Найти</button>
+                <td class="bg-secondary"><form class="form-inline">
+                    <input class="form-control mr-sm-2 w-50"  type="date" placeholder="Введите дату" aria-label="Search">
+                    <button class="btn btn-outline-success " type="submit">Найти</button>
                 </form></td>
-                <td><form class="form-inline">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Введите сумму" aria-label="Search">
-                    <button class="btn btn-outline-success mt-2" type="submit">Найти</button>
+                <td class="bg-secondary"><form class="form-inline ">
+                    <input class="form-control  mr-sm-2 w-50"  type="number" placeholder="Введите сумму" aria-label="Search">
+                    <button class="btn btn-outline-success " type="submit">Найти</button>
                 </form></td>
-                <td><form class="form-inline">
-                    <input class="form-control mr-sm-2"  type="search" placeholder="Введите отдел" aria-label="Search">
-                    <button class="btn btn-outline-success mt-2" type="submit">Найти</button>
+                <td class="bg-secondary"><form class="form-inline">
+                    <input class="form-control mr-sm-2 w-50"  type="search" placeholder="Введите отдел" aria-label="Search">
+                    <button class="btn btn-outline-success " type="submit">Найти</button>
                 </form></td>
+                <td class="bg-secondary"></td>
+                <td class="bg-secondary"></td>
             </tr>
             </thead>
             <tbody>
-            <tr v-for="{ name, position, employment, department, salary_position, ratio, headDepartment } in emplouees ">
+            <tr v-for="{ name, position, employment, department, salary_position, ratio, id } in emplouees ">
+                <td>{{ id }}</td>
                 <td>{{ name }}</td>
                 <td>{{ position }}</td>
                 <td>{{ employment}}</td>
                 <td>{{ salary_position * ratio }}</td>
                 <td>{{ department}}</td>
+                <td>фото</td>
                 <td><button type="button" class="btn btn-outline-secondary">
                     Изменить</button></td>
             </tr>
@@ -91,15 +93,7 @@
         name: 'Hierarchyt',
         data() {
             return {
-                sortBy: 'age',
-                sortDesc: false,
-                fields: [
-                    { key: 'name', sortable: true },
-                    { key: 'position', sortable: true },
-                    { key: 'employment', sortable: true },
-                    { key: 'department', sortable: false }
-                ],
-                loading: false,
+                sort:'',
                 erorr: null,
                 emplouees: null,
                 meta: null,
@@ -157,14 +151,21 @@
         methods: {
             fetchData() {
                 this.error = this.emplouees = null;
-                this.loading = true;
                 axios
                     .get('/api/employees')
                     .then(response=>{
-                        this.loading = false;
                         this.emplouees = response.data.data;
                     }).catch(error => {
-                    this.loading = false;
+                    this.error = error.response.data.message || error.message;
+                });
+            },
+            sortFioData() {
+                this.error = this.emplouees = null;
+                axios
+                    .get('/api/employees/sortfio')
+                    .then(response=>{
+                        this.emplouees = response.data.data;
+                    }).catch(error => {
                     this.error = error.response.data.message || error.message;
                 });
             },

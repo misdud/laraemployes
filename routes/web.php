@@ -40,7 +40,7 @@ Route::get('/test3', function (){
 });
 Auth::routes();
 //--any -
-Route::get('/{any}', 'HomeController@index')->where('any', '.*');
+//Route::get('/{any}', 'HomeController@index')->where('any', '.*');
 
 Route::get('/home', 'HomeController@index')->name('home');
 

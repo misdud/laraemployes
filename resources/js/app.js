@@ -7,13 +7,13 @@
 require('./bootstrap');
 
 window.Vue = require('vue');
-
-import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 import App from './components/App'
 import Hierarchyt from './components/hierarchy'
 import Employees from './components/employees'
+
+import route from './route'
 
 Vue.use(VueRouter)
 

@@ -25,10 +25,23 @@ class EmployeController extends Controller
                  Employe::with('position', 'department')
                      ->where('id_positione','<>',$positionHeadDepartament)
                      ->orderBy('full_name')
-                     ->paginate(10)
+                     ->paginate(5)
          );
 
 
+    }
+
+    public function sortFio(){
+
+        $positionHeadDepartament = Position::select('id')
+            ->where('name_position', 'Начальник отдела')->get();
+
+        return  EmployeResoutse::collection(
+            Employe::with('position', 'department')
+                ->where('id_positione','<>',$positionHeadDepartament)
+                ->orderBy('full_name', 'desc')
+                ->paginate(5)
+        );
     }
 
     /**

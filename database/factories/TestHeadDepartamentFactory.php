@@ -7,8 +7,10 @@ use Faker\Generator as Faker;
 
 $factory->define(App\HeadDepartament::class, function (Faker $faker) {
     static $departament = 1;
+    static $employe= 1;
     return [
         'id_departamentd'=>$departament++,
-        'id_employee'=>$faker->numberBetween($min = 1, $max = 6000),
+        'id_employee'=>$employe++,
+        //'id_employee'=>$faker->numberBetween($min = 1, $max = 6000),
     ];
 });

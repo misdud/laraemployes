@@ -34,9 +34,22 @@ class DatabaseSeeder extends Seeder
         //$this->call(DepartmentSeeder::class);
 
         // 6 EmployeSeeder
-          //$this->call(EmployeSeeder::class);
+        //$this->call(EmployeSeeder::class);
+
+
+        //------------END--------------
+
+        // FOR TEST
+        // !!! after edit factory for step 8 HeadDepartEmplSeeder //
+        //$this->call(HeaDepEmpSeeder::class);
 
         // 7 HeadDepartamentSeeder
-         // $this->call(HeadDepartamentSeeder::class);
+        //$this->call(HeadDepartamentSeeder::class);
+
+        // 8 !!! befor edit seeder on 50000
+        // and factory set: id_position 10-22  EmployeSeeder
+        //$this->call(EmployeSeeder::class);
+
+
     }
 }

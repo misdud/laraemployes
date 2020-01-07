@@ -4,39 +4,20 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-require('./bootstrap');
+require("./bootstrap");
 
-window.Vue = require('vue');
-import VueRouter from 'vue-router'
+window.Vue = require("vue");
+import VueRouter from "vue-router";
 
-import App from './components/App'
-import Hierarchyt from './components/hierarchy'
-import Employees from './components/employees'
+import App from "./components/App";
 
 //import route from './route'
+import router from "./routes";
 
-Vue.use(VueRouter)
-
-
-const router = new VueRouter({
-    mode: 'history',
-    routes: [
-        {
-            path: '/',
-            name: 'hierarchy',
-            component: Hierarchyt,
-        },
-        {
-            path: '/employees',
-            name: 'employees',
-            component: Employees
-        },
-
-    ],
-});
+Vue.use(VueRouter);
 
 const app = new Vue({
-    el: '#app',
+    el: "#appmy",
     components: { App },
-    router,
+    router
 });

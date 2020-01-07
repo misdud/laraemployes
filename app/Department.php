@@ -29,7 +29,7 @@ class Department extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'id', 'name', 'id_deputys'
+        'id', 'name', 'id_deputys', 'name_head_depart','id_posit_head'
     ];
 
     public function deputy(){

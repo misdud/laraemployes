@@ -21,8 +21,8 @@ class EmployeResoutse extends JsonResource
             'employment'=>date('d.m.Y',strtotime($this->employment)),
             'ratio'=>$this->ratio,
             'salary_position'=>$this->position->salary_position,
-            'department'=>$this->department->name,
             'position'=>$this->position->name_position,
+            'name_head_depart'=>$this->department->name_head_depart
 
         ];
 

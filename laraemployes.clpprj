@@ -4,5 +4,16 @@
   <PM_URL><![CDATA[http://localhost/]]></PM_URL>
   <PM_HOME_URL><![CDATA[http://localhost/]]></PM_HOME_URL>
   <PM_LIBS><![CDATA[]]></PM_LIBS>
+  <PM_FTP_CONNECTION><![CDATA[]]></PM_FTP_CONNECTION>
+  <PM_FTP_DIR><![CDATA[]]></PM_FTP_DIR>
+  <PM_FTP_UPLOAD_ON_SAVE><![CDATA[INT:0]]></PM_FTP_UPLOAD_ON_SAVE>
  </settings>
+ <removed value=";"/>
+ <added value=""/>
+ <lastopfiles>
+  <file name="C:\xampp\htdocs\laraemployes\database\seeds\HeadDepartamentSeeder.php"/>
+  <file name="C:\xampp\htdocs\laraemployes\database\seeds\PositionSeeder.php"/>
+  <file name="C:\xampp\htdocs\laraemployes\database\seeds\EmployeSeeder.php"/>
+  <lastactivefile name=""/>
+ </lastopfiles>
 </project>

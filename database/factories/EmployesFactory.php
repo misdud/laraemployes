@@ -11,8 +11,11 @@ $factory->define(App\Employe::class, function (Faker $faker) {
     return [
         'full_name'=>$faker->name,
         'employment'=>$faker->date($format = 'Y-m-d', $max = 'now'),
-        'ratio'=>$faker->randomFloat($nbMaxDecimals = NULL, $min = 1, $max = 1.4),
+        'ratio'=>$faker->randomFloat($nbMaxDecimals = NULL, $min = 1, $max = 1.5),
         'id_departament'=>$faker->numberBetween($min = 1, $max = 200),
+        // for test
+        // 9 - for headDepart
+        //'id_positione'=> 9
         'id_positione'=>$faker->numberBetween($min = 10, $max = 22),
     ];
 });

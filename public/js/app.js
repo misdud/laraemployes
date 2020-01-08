@@ -1953,13 +1953,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      selectedFile: '',
+      photoLink: "http://laraemployes/storage/photos/123.jpeg",
+      selectedFile: "",
+      saving: null,
+      msg: "",
       headDepartametns: [],
       positions: [],
       error: null,
       loaded: false,
+      selected: {
+        id: ""
+      },
       employe: {
-        id: null,
+        id: "",
         name: "",
         position: "",
         employment: "",
@@ -1974,15 +1980,27 @@ __webpack_require__.r(__webpack_exports__);
       return this.employe.ratio * this.employe.salary_position;
     }
   },
-  watch: {
-    employe: function employe(val1, val2) {
-      this.employe.salary_position + 222;
-    }
-  },
+  watch: {},
   methods: {
     onSubmit: function onSubmit(event) {
-      // @todo form submit event
-      console.log(event);
+      var _this = this;
+
+      this.saving = true;
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.put("/api/employees/" + this.employe.id, {
+        name: this.employe.name,
+        position: this.employe.position,
+        employment: this.employe.employment,
+        ratio: this.employe.ratio,
+        name_head_depart: this.employe.name_head_depart
+      }).then(function (response) {
+        _this.msg = "Сотрудник обновлён";
+        console.log(response + "сотруд обн");
+        _this.employe = response.data;
+      })["catch"](function (error) {
+        console.log(error);
+      }).then(function () {
+        return _this.saving = false;
+      });
     },
     onFileSelected: function onFileSelected() {
       console.log(event);
@@ -1991,11 +2009,11 @@ __webpack_require__.r(__webpack_exports__);
     onUpload: function onUpload() {
       var settings = {
         headers: {
-          'Content-Type': 'multipart/form-data'
+          "Content-Type": "multipart/form-data"
         }
       };
       var formData = new FormData();
-      formData.append('file', this.selectedFile, this.selectedFile.name);
+      formData.append("file", this.selectedFile, this.selectedFile.name);
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("/api/employees/storephotos", formData, settings).then(function (response) {
         console.log(response);
       })["catch"](function (response) {
@@ -2003,19 +2021,19 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     getHeadDepartament: function getHeadDepartament() {
-      var _this = this;
+      var _this2 = this;
 
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/api/employees/headdeparts").then(function (response) {
-        _this.headDepartametns = response.data;
+        _this2.headDepartametns = response.data;
       })["catch"](function (error) {
         console.log(error);
       });
     },
     getPositions: function getPositions() {
-      var _this2 = this;
+      var _this3 = this;
 
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/api/employees/positions").then(function (response) {
-        _this2.positions = response.data;
+        _this3.positions = response.data;
       })["catch"](function (error) {
         console.log(error);
       });
@@ -2026,14 +2044,14 @@ __webpack_require__.r(__webpack_exports__);
     this.getPositions();
   },
   created: function created() {
-    var _this3 = this;
+    var _this4 = this;
 
     this.error = null;
     axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/api/employees/" + this.$route.params.id + "/edit").then(function (response) {
-      _this3.employe = response.data;
-      _this3.loaded = true;
+      _this4.employe = response.data;
+      _this4.loaded = true;
     })["catch"](function (error) {
-      _this3.error = error.response.data || error.message;
+      _this4.error = error.response.data || error.message;
       console.log(error);
     });
   }
@@ -37874,8 +37892,15 @@ var render = function() {
       _c("div", { staticClass: "col" }, [
         _c("img", {
           staticClass: "img-responsive",
-          attrs: { src: "storage/photos/123.jpg", height: "70", width: "90" }
+          attrs: {
+            src: _vm.photoLink,
+            alt: "Image",
+            height: "50%",
+            width: "50%"
+          }
         }),
+        _vm._v(" "),
+        _c("br"),
         _vm._v(" "),
         _c("input", {
           ref: "file",
@@ -37935,27 +37960,46 @@ var render = function() {
                   _vm._v(" "),
                   _c(
                     "select",
-                    { staticClass: "form-control", attrs: { id: "position" } },
+                    {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.selected,
+                          expression: "selected"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { id: "position" },
+                      on: {
+                        change: function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.selected = $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        }
+                      }
+                    },
                     _vm._l(_vm.positions, function(posit, index) {
                       return _c(
                         "option",
-                        {
-                          key: index,
-                          domProps: {
-                            selected:
-                              posit.name_position === _vm.employe.position,
-                            value: posit.id
-                          }
-                        },
+                        { key: index, domProps: { value: { id: posit.id } } },
                         [
                           _vm._v(
-                            "\r\n            " +
+                            "\n              " +
                               _vm._s(posit.name_position) +
-                              "\r\n            \\ Оклад: " +
+                              "\n              \\ Оклад: " +
                               _vm._s(posit.salary_position) +
-                              "\r\n            id" +
+                              "\n              id" +
                               _vm._s(posit.id) +
-                              "\r\n          "
+                              "\n            "
                           )
                         ]
                       )
@@ -38051,13 +38095,13 @@ var render = function() {
                         },
                         [
                           _vm._v(
-                            "\r\n            " +
+                            "\n              " +
                               _vm._s(head.name_head_depart) +
-                              " \\\r\n            " +
+                              " \\\n              " +
                               _vm._s(head.name) +
-                              "\r\n            id" +
+                              "\n              id" +
                               _vm._s(head.id) +
-                              "\r\n          "
+                              "\n            "
                           )
                         ]
                       )
@@ -38087,7 +38131,7 @@ var render = function() {
                     "button",
                     {
                       staticClass: "btn btn-primary",
-                      attrs: { type: "submit" }
+                      attrs: { type: "submit", disabled: _vm.saving }
                     },
                     [_vm._v("Обновить")]
                   )
@@ -38095,7 +38139,8 @@ var render = function() {
               ]
             )
       ])
-    ])
+    ]),
+    _vm._v("\n  " + _vm._s(_vm.selected.id) + "\n")
   ])
 }
 var staticRenderFns = []
@@ -54228,8 +54273,8 @@ var routes = [{
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\xampp\htdocs\laraemployes\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\laraemployes\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! c:\xampp\htdocs\laraemployes\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! c:\xampp\htdocs\laraemployes\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

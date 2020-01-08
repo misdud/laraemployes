@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
-use App\Http\Resources\EmployeResoutse;
+use App\Http\Resources\EmployeResource;
 use App\Http\Resources\HeadDepartResource;
 use App\Http\Resources\PositionResource;
 use App\Employe;
@@ -31,7 +31,7 @@ class EmployeController extends Controller
               ->orderBy('full_name')
               ->paginate(5);
 
-         return  EmployeResoutse::collection($employes)->additional(['meta'=>[
+         return  EmployeResource::collection($employes)->additional(['meta'=>[
          'Api_base_url' => url('/')
          ]]);
 
@@ -42,7 +42,7 @@ class EmployeController extends Controller
         $positionHeadDepartament = Position::select('id')
             ->where('name_position', 'Начальник отдела')->first();
 
-        return  EmployeResoutse::collection(
+        return  EmployeResource::collection(
             Employe::with('position', 'department')
                 ->where('id_positione','<>',$positionHeadDepartament->id)
                 ->orderBy('full_name', 'desc')
@@ -83,7 +83,7 @@ class EmployeController extends Controller
         // $employe = Employe::with('position', 'department')
         //  ->where('id', $id)->get();
 
-        // return  EmployeResoutse::collection($employe);
+        // return  EmployeResource::collection($employe);
 
     }
 
@@ -97,8 +97,8 @@ class EmployeController extends Controller
     {
        //  $employe = Employe::with('position', 'department')
        //  ->where('id', $id)->first();
-       EmployeResoutse::withoutWrapping();
-       return new EmployeResoutse(Employe::with('position', 'department')->findOrFail($id));
+       EmployeResource::withoutWrapping();
+       return new EmployeResource(Employe::with('position', 'department')->findOrFail($id));
 
 
 
@@ -113,7 +113,24 @@ class EmployeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = $request->validate([
+            'name' => 'required',
+            'position' => 'required',
+            'employment' => 'required',
+            'ratio' => 'required',
+            'name_head_depart' => 'required',
+        ]);
+
+        $employe = Employe::find($id);
+        $employe->full_name=$request->name;
+       // $employe->employment=$request->employment;
+        $employe->ratio=$request->ratio;
+        //$employe->id_departament=$request->id_departament;
+        //$employe->id_positione=$request->id_positione;
+        $employe->save();
+
+        EmployeResource::withoutWrapping();
+        return new EmployeResource(Employe::with('position', 'department')->find($id));
     }
 
     /**
@@ -137,7 +154,7 @@ class EmployeController extends Controller
        $headDeparts = Department::select('id', 'name','name_head_depart')
        ->orderBy('name_head_depart')->get();
 
-       EmployeResoutse::withoutWrapping();
+       EmployeResource::withoutWrapping();
        return HeadDepartResource::collection($headDeparts);
     }
 
@@ -159,6 +176,13 @@ class EmployeController extends Controller
 
         $path = Storage::putFile('/public/photos', $request->file('file'));
         return $path;
+    }
+
+    public function search(Request $request){
+
+        //$employes = Employe::where('name', $request->keywords)->get();
+
+        //return response()->json($employes);
     }
 
 

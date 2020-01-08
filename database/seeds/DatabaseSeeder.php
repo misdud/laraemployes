@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
         //$this->call(DepartmentSeeder::class);
 
         // 6 EmployeSeeder
-        //$this->call(EmployeSeeder::class);
+        $this->call(EmployeSeeder::class);
 
 
         //------------END--------------

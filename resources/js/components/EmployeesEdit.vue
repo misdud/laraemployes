@@ -1,13 +1,22 @@
 <template>
-  <div>
+<div>
+  <div class="row">
     <!-- {{ employe }}
     {{ employe.employment }}
     <hr />
     {{ headDepartametns }}-->
     <!-- {{ positions }} -->
     <hr />
+     <div class="col">
+       <img src="storage/photos/123.jpg" class="img-responsive" height="70" width="90">
+       <input type="file" id="file" ref="file" v-on:change="onFileSelected" >
+        <button  v-on:click="onUpload">Загрузить</button>
+     </div>
+
+
+  <div class="col"> 
     <div v-if="! loaded">Загрузка...</div>
-    <form @submit.prevent="onSubmit($event)" v-else>
+    <form v-on:submit.prevent="onSubmit($event)" v-else>
       <div class="form-group">
         <label for="employe">ФИО</label>
         <input class="form-control" id="employe" v-model.lazy="employe.name" />
@@ -44,7 +53,7 @@
           v-model="employe.ratio"
         />
       </div>
-      <p>{{allSalary}}</p>
+      <p>Текущая зарплата: {{allSalary}}</p>
       <div class="form-group">
         <label for="name_head_depart">Начальник</label>
         <select class="form-control" id="name_head_depart">
@@ -67,13 +76,16 @@
         <button type="submit" class="btn btn-primary">Обновить</button>
       </div>
     </form>
+     </div>
   </div>
+</div>
 </template>
 <script>
 import axios from "axios";
 export default {
   data() {
     return {
+      selectedFile: '',
       headDepartametns: [],
       positions: [],
       error: null,
@@ -102,7 +114,25 @@ export default {
   methods: {
     onSubmit(event) {
       // @todo form submit event
+      console.log(event)
     },
+    onFileSelected() {
+     console.log(event)
+     this.selectedFile = this.$refs.file.files[0];
+     
+  },
+  onUpload() {
+    let settings = { headers: { 'Content-Type': 'multipart/form-data' } };
+    const formData = new FormData()
+    formData.append('file', this.selectedFile, this.selectedFile.name)
+    axios.post("/api/employees/storephotos", formData, settings)
+    .then(response =>{
+      console.log(response)
+    }).catch(response => {
+    console.log(response)
+   })
+},
+    
     getHeadDepartament() {
       axios
         .get("/api/employees/headdeparts")
@@ -131,6 +161,7 @@ export default {
   },
 
   created() {
+    this.error=null;
     axios
       .get("/api/employees/" + this.$route.params.id + "/edit")
       .then(response => {

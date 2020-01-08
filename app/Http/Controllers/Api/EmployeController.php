@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 use App\Http\Resources\EmployeResoutse;
 use App\Http\Resources\HeadDepartResource;
@@ -11,6 +12,7 @@ use App\Http\Resources\PositionResource;
 use App\Employe;
 use App\Position;
 use App\Department;
+
 
 class EmployeController extends Controller
 {
@@ -148,4 +150,16 @@ class EmployeController extends Controller
         PositionResource::withoutWrapping();
         return PositionResource::collection($positions);
     }
+
+
+
+    public function storPhoto(Request $request){
+
+        //$path = $request->file('file')->store('/public/photos');
+
+        $path = Storage::putFile('/public/photos', $request->file('file'));
+        return $path;
+    }
+
+
 }

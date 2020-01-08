@@ -1938,10 +1938,22 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      selectedFile: '',
       headDepartametns: [],
       positions: [],
       error: null,
@@ -1968,7 +1980,27 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
-    onSubmit: function onSubmit(event) {// @todo form submit event
+    onSubmit: function onSubmit(event) {
+      // @todo form submit event
+      console.log(event);
+    },
+    onFileSelected: function onFileSelected() {
+      console.log(event);
+      this.selectedFile = this.$refs.file.files[0];
+    },
+    onUpload: function onUpload() {
+      var settings = {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      };
+      var formData = new FormData();
+      formData.append('file', this.selectedFile, this.selectedFile.name);
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("/api/employees/storephotos", formData, settings).then(function (response) {
+        console.log(response);
+      })["catch"](function (response) {
+        console.log(response);
+      });
     },
     getHeadDepartament: function getHeadDepartament() {
       var _this = this;
@@ -1996,6 +2028,7 @@ __webpack_require__.r(__webpack_exports__);
   created: function created() {
     var _this3 = this;
 
+    this.error = null;
     axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/api/employees/" + this.$route.params.id + "/edit").then(function (response) {
       _this3.employe = response.data;
       _this3.loaded = true;
@@ -37835,205 +37868,234 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _c("hr"),
-    _vm._v(" "),
-    !_vm.loaded
-      ? _c("div", [_vm._v("Загрузка...")])
-      : _c(
-          "form",
-          {
-            on: {
-              submit: function($event) {
-                $event.preventDefault()
-                return _vm.onSubmit($event)
-              }
-            }
-          },
-          [
-            _c("div", { staticClass: "form-group" }, [
-              _c("label", { attrs: { for: "employe" } }, [_vm._v("ФИО")]),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model.lazy",
-                    value: _vm.employe.name,
-                    expression: "employe.name",
-                    modifiers: { lazy: true }
-                  }
-                ],
-                staticClass: "form-control",
-                attrs: { id: "employe" },
-                domProps: { value: _vm.employe.name },
+    _c("div", { staticClass: "row" }, [
+      _c("hr"),
+      _vm._v(" "),
+      _c("div", { staticClass: "col" }, [
+        _c("img", {
+          staticClass: "img-responsive",
+          attrs: { src: "storage/photos/123.jpg", height: "70", width: "90" }
+        }),
+        _vm._v(" "),
+        _c("input", {
+          ref: "file",
+          attrs: { type: "file", id: "file" },
+          on: { change: _vm.onFileSelected }
+        }),
+        _vm._v(" "),
+        _c("button", { on: { click: _vm.onUpload } }, [_vm._v("Загрузить")])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col" }, [
+        !_vm.loaded
+          ? _c("div", [_vm._v("Загрузка...")])
+          : _c(
+              "form",
+              {
                 on: {
-                  change: function($event) {
-                    return _vm.$set(_vm.employe, "name", $event.target.value)
+                  submit: function($event) {
+                    $event.preventDefault()
+                    return _vm.onSubmit($event)
                   }
                 }
-              })
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "form-group" }, [
-              _c("label", { attrs: { for: "position" } }, [
-                _vm._v("Должность")
-              ]),
-              _vm._v(" "),
-              _c(
-                "select",
-                { staticClass: "form-control", attrs: { id: "position" } },
-                _vm._l(_vm.positions, function(posit, index) {
-                  return _c(
-                    "option",
-                    {
-                      key: index,
-                      domProps: {
-                        selected: posit.name_position === _vm.employe.position,
-                        value: posit.id
+              },
+              [
+                _c("div", { staticClass: "form-group" }, [
+                  _c("label", { attrs: { for: "employe" } }, [_vm._v("ФИО")]),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model.lazy",
+                        value: _vm.employe.name,
+                        expression: "employe.name",
+                        modifiers: { lazy: true }
                       }
+                    ],
+                    staticClass: "form-control",
+                    attrs: { id: "employe" },
+                    domProps: { value: _vm.employe.name },
+                    on: {
+                      change: function($event) {
+                        return _vm.$set(
+                          _vm.employe,
+                          "name",
+                          $event.target.value
+                        )
+                      }
+                    }
+                  })
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-group" }, [
+                  _c("label", { attrs: { for: "position" } }, [
+                    _vm._v("Должность")
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "select",
+                    { staticClass: "form-control", attrs: { id: "position" } },
+                    _vm._l(_vm.positions, function(posit, index) {
+                      return _c(
+                        "option",
+                        {
+                          key: index,
+                          domProps: {
+                            selected:
+                              posit.name_position === _vm.employe.position,
+                            value: posit.id
+                          }
+                        },
+                        [
+                          _vm._v(
+                            "\r\n            " +
+                              _vm._s(posit.name_position) +
+                              "\r\n            \\ Оклад: " +
+                              _vm._s(posit.salary_position) +
+                              "\r\n            id" +
+                              _vm._s(posit.id) +
+                              "\r\n          "
+                          )
+                        ]
+                      )
+                    }),
+                    0
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-group" }, [
+                  _c("label", { attrs: { for: "employment" } }, [
+                    _vm._v("Дата приема на работу")
+                  ]),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.employe.employment,
+                        expression: "employe.employment"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    attrs: { id: "employment", type: "text" },
+                    domProps: { value: _vm.employe.employment },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(_vm.employe, "employment", $event.target.value)
+                      }
+                    }
+                  })
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-group" }, [
+                  _c("label", { attrs: { for: "ratio" } }, [_vm._v("КТУ")]),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.employe.ratio,
+                        expression: "employe.ratio"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    attrs: {
+                      id: "ratio",
+                      type: "number",
+                      min: "1.0",
+                      max: "1.5",
+                      step: "0.01"
+                    },
+                    domProps: { value: _vm.employe.ratio },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(_vm.employe, "ratio", $event.target.value)
+                      }
+                    }
+                  })
+                ]),
+                _vm._v(" "),
+                _c("p", [_vm._v("Текущая зарплата: " + _vm._s(_vm.allSalary))]),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-group" }, [
+                  _c("label", { attrs: { for: "name_head_depart" } }, [
+                    _vm._v("Начальник")
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "select",
+                    {
+                      staticClass: "form-control",
+                      attrs: { id: "name_head_depart" }
+                    },
+                    _vm._l(_vm.headDepartametns, function(head, index) {
+                      return _c(
+                        "option",
+                        {
+                          key: index,
+                          domProps: {
+                            selected:
+                              head.name_head_depart ===
+                              _vm.employe.name_head_depart,
+                            value: head.id
+                          }
+                        },
+                        [
+                          _vm._v(
+                            "\r\n            " +
+                              _vm._s(head.name_head_depart) +
+                              " \\\r\n            " +
+                              _vm._s(head.name) +
+                              "\r\n            id" +
+                              _vm._s(head.id) +
+                              "\r\n          "
+                          )
+                        ]
+                      )
+                    }),
+                    0
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-group" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-outline-primary",
+                      attrs: { type: "button" }
                     },
                     [
-                      _vm._v(
-                        "\n          " +
-                          _vm._s(posit.name_position) +
-                          "\n          \\ Оклад: " +
-                          _vm._s(posit.salary_position) +
-                          "\n          id" +
-                          _vm._s(posit.id) +
-                          "\n        "
+                      _c(
+                        "router-link",
+                        { attrs: { to: { name: "employees" } } },
+                        [_vm._v("Возвратиться")]
                       )
-                    ]
-                  )
-                }),
-                0
-              )
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "form-group" }, [
-              _c("label", { attrs: { for: "employment" } }, [
-                _vm._v("Дата приема на работу")
-              ]),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.employe.employment,
-                    expression: "employe.employment"
-                  }
-                ],
-                staticClass: "form-control",
-                attrs: { id: "employment", type: "text" },
-                domProps: { value: _vm.employe.employment },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.$set(_vm.employe, "employment", $event.target.value)
-                  }
-                }
-              })
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "form-group" }, [
-              _c("label", { attrs: { for: "ratio" } }, [_vm._v("КТУ")]),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.employe.ratio,
-                    expression: "employe.ratio"
-                  }
-                ],
-                staticClass: "form-control",
-                attrs: {
-                  id: "ratio",
-                  type: "number",
-                  min: "1.0",
-                  max: "1.5",
-                  step: "0.01"
-                },
-                domProps: { value: _vm.employe.ratio },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.$set(_vm.employe, "ratio", $event.target.value)
-                  }
-                }
-              })
-            ]),
-            _vm._v(" "),
-            _c("p", [_vm._v(_vm._s(_vm.allSalary))]),
-            _vm._v(" "),
-            _c("div", { staticClass: "form-group" }, [
-              _c("label", { attrs: { for: "name_head_depart" } }, [
-                _vm._v("Начальник")
-              ]),
-              _vm._v(" "),
-              _c(
-                "select",
-                {
-                  staticClass: "form-control",
-                  attrs: { id: "name_head_depart" }
-                },
-                _vm._l(_vm.headDepartametns, function(head, index) {
-                  return _c(
-                    "option",
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "button",
                     {
-                      key: index,
-                      domProps: {
-                        selected:
-                          head.name_head_depart ===
-                          _vm.employe.name_head_depart,
-                        value: head.id
-                      }
+                      staticClass: "btn btn-primary",
+                      attrs: { type: "submit" }
                     },
-                    [
-                      _vm._v(
-                        "\n          " +
-                          _vm._s(head.name_head_depart) +
-                          " \\\n          " +
-                          _vm._s(head.name) +
-                          "\n          id" +
-                          _vm._s(head.id) +
-                          "\n        "
-                      )
-                    ]
+                    [_vm._v("Обновить")]
                   )
-                }),
-                0
-              )
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "form-group" }, [
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-outline-primary",
-                  attrs: { type: "button" }
-                },
-                [
-                  _c("router-link", { attrs: { to: { name: "employees" } } }, [
-                    _vm._v("Возвратиться")
-                  ])
-                ],
-                1
-              ),
-              _vm._v(" "),
-              _c(
-                "button",
-                { staticClass: "btn btn-primary", attrs: { type: "submit" } },
-                [_vm._v("Обновить")]
-              )
-            ])
-          ]
-        )
+                ])
+              ]
+            )
+      ])
+    ])
   ])
 }
 var staticRenderFns = []
@@ -54166,8 +54228,8 @@ var routes = [{
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! c:\xampp\htdocs\laraemployes\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! c:\xampp\htdocs\laraemployes\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\xampp\htdocs\laraemployes\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\laraemployes\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

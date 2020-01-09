@@ -26,25 +26,23 @@ class EmployeController extends Controller
         // $positionHeadDepartament = Position::select('id')
         // ->where('name_position', 'Начальник отдела')->first();
 
-          $employes = Employe::with('position', 'department')
-             // ->where('id_positione','!=',$positionHeadDepartament->id)
-              ->orderBy('full_name')
-              ->paginate(5);
+        $employes = Employe::with('position', 'department')
+            // ->where('id_positione','!=',$positionHeadDepartament->id)
+            ->orderBy('full_name')
+            ->paginate(5);
 
-         return  EmployeResource::collection($employes)->additional(['meta'=>[
-         'Api_base_url' => url('/')
-         ]]);
-
+        return  EmployeResource::collection($employes);
     }
 
-    public function sortFio(){
+    public function sortFio()
+    {
 
         $positionHeadDepartament = Position::select('id')
             ->where('name_position', 'Начальник отдела')->first();
 
         return  EmployeResource::collection(
             Employe::with('position', 'department')
-                ->where('id_positione','<>',$positionHeadDepartament->id)
+                ->where('id_positione', '<>', $positionHeadDepartament->id)
                 ->orderBy('full_name', 'desc')
                 ->paginate(5)
         );
@@ -85,6 +83,7 @@ class EmployeController extends Controller
 
         // return  EmployeResource::collection($employe);
 
+
     }
 
     /**
@@ -95,13 +94,10 @@ class EmployeController extends Controller
      */
     public function edit($id)
     {
-       //  $employe = Employe::with('position', 'department')
-       //  ->where('id', $id)->first();
-       EmployeResource::withoutWrapping();
-       return new EmployeResource(Employe::with('position', 'department')->findOrFail($id));
-
-
-
+        //  $employe = Employe::with('position', 'department')
+        //  ->where('id', $id)->first();
+        EmployeResource::withoutWrapping();
+        return new EmployeResource(Employe::with('position', 'department')->findOrFail($id));
     }
 
     /**
@@ -114,24 +110,32 @@ class EmployeController extends Controller
     public function update(Request $request, $id)
     {
         $data = $request->validate([
-            'name' => 'required',
-            'position' => 'required',
-            'employment' => 'required',
-            'ratio' => 'required',
-            'name_head_depart' => 'required',
+            'name' => 'required|string',
+            'position' => 'required|string',
+            'employment' => 'required|date',
+            'ratio' => 'required|numeric',
+            'name_head_depart' => 'required|string',
         ]);
 
 
         //for search id departament
         $nameHeadDepart = $request->name_head_depart;
-        $departamentId = Department::select('id')->where('name_head_depart', $nameHeadDepart)->first(); 
+        $departamentId = Department::select('id')->where('name_head_depart', $nameHeadDepart)->first();
+
+        //for search id position
+        $namePosition = $request->position;
+        $positionId = Position::select('id')->where('name_position', $namePosition)->first();
+
+        //for prepare date
+        $date = $request->employment;
+        $myDate = date('Y-m-d H:i:s', strtotime($date));
 
         $employe = Employe::find($id);
-        $employe->full_name=$request->name;
-       // $employe->employment=$request->employment;
-        $employe->ratio=$request->ratio;
-        $employe->id_departament=$departamentId->id;
-        //$employe->id_positione=$request->id_positione;
+        $employe->full_name = $request->name;
+        $employe->employment = $myDate;
+        $employe->ratio = $request->ratio;
+        $employe->id_departament = $departamentId->id;
+        $employe->id_positione = $positionId->id;
         $employe->save();
 
         EmployeResource::withoutWrapping();
@@ -150,24 +154,25 @@ class EmployeController extends Controller
 
         $employees->delete();
 
-        return response()->json(['message'=>'Сотрудник удалён']);
-
+        return response()->json(['message' => 'Сотрудник удалён']);
     }
 
-    public function getHeadDepart(){
+    public function getHeadDepart()
+    {
 
-       $headDeparts = Department::select('id', 'name','name_head_depart')
-       ->orderBy('name_head_depart')->get();
+        $headDeparts = Department::select('id', 'name', 'name_head_depart')
+            ->orderBy('name_head_depart')->get();
 
-       EmployeResource::withoutWrapping();
-       return HeadDepartResource::collection($headDeparts);
+        EmployeResource::withoutWrapping();
+        return HeadDepartResource::collection($headDeparts);
     }
 
-    public function getPosition(){
+    public function getPosition()
+    {
 
         $positions = Position::select('id', 'name_position', 'salary_position')
-        ->where('id','>',9)
-        ->orderBy('name_position')->get();
+            ->where('id', '>', 9)
+            ->orderBy('name_position')->get();
 
         PositionResource::withoutWrapping();
         return PositionResource::collection($positions);
@@ -175,7 +180,8 @@ class EmployeController extends Controller
 
 
 
-    public function storPhoto(Request $request){
+    public function storPhoto(Request $request)
+    {
 
         //$path = $request->file('file')->store('/public/photos');
 
@@ -183,12 +189,11 @@ class EmployeController extends Controller
         return $path;
     }
 
-    public function search(Request $request){
+    public function search(Request $request)
+    {
 
         //$employes = Employe::where('name', $request->keywords)->get();
 
         //return response()->json($employes);
     }
-
-
 }

@@ -1867,6 +1867,18 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -1964,15 +1976,13 @@ __webpack_require__.r(__webpack_exports__);
         photoLink: null,
         photoLinkDefault: "/storage/photos/no_photo.png"
       },
-      saving: null,
+      status: false,
       msg: "",
+      saving: null,
       headDepartametns: [],
       positions: [],
       error: null,
       loaded: false,
-      selectedPosit: {
-        id: ""
-      },
       employe: {
         id: "",
         name: "",
@@ -1983,7 +1993,9 @@ __webpack_require__.r(__webpack_exports__);
         name_head_depart: ""
       },
       selectedHedDep: "",
-      headDeprts: ""
+      headDeprts: "",
+      selectedPosit: "",
+      selPosit: ""
     };
   },
   computed: {
@@ -1997,25 +2009,33 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       this.saving = true;
-      this.headDeprts = '';
 
-      if (this.selectedHedDep !== '') {
+      if (this.selectedHedDep !== "") {
         this.headDeprts = this.selectedHedDep;
       } else {
         this.headDeprts = this.employe.name_head_depart;
       } // console.log(this.headDeprts)
 
 
+      if (this.selectedPosit !== "") {
+        this.selPosit = this.selectedPosit;
+      } else {
+        this.selPosit = this.employe.position;
+      }
+
+      console.log(this.selPosit);
+      console.log(_typeof(this.employe.employment));
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.put("/api/employees/" + this.employe.id, {
         name: this.employe.name,
-        position: this.employe.position,
-        employment: this.employe.employment,
+        position: this.selPosit,
+        employment: this.employe.employment == "" ? this.employe.employment : this.employe.employment,
         ratio: this.employe.ratio,
         name_head_depart: this.headDeprts
       }).then(function (response) {
-        _this.msg = "Сотрудник обновлён";
         console.log(response + "сотруд обн");
         _this.employe = response.data;
+        _this.msg = "Сотрудник обновлён";
+        _this.status = true;
       })["catch"](function (error) {
         console.log(error);
       }).then(function () {
@@ -2058,6 +2078,24 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (error) {
         console.log(error);
       });
+    },
+    deleteEmpoye: function deleteEmpoye() {
+      var _this4 = this;
+
+      var conf = confirm("Вы точно хотите удалиь этого сотрудника?");
+
+      if (conf === true) {
+        this.message = null;
+        axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]("/api/employees/" + this.employe.id).then(function (response) {
+          _this4.$router.push({
+            name: "employees"
+          });
+
+          alert("Сотрудник был удалён");
+        })["catch"](function (error) {
+          console.log(error);
+        });
+      }
     }
   },
   mounted: function mounted() {
@@ -2065,14 +2103,14 @@ __webpack_require__.r(__webpack_exports__);
     this.getPositions();
   },
   created: function created() {
-    var _this4 = this;
+    var _this5 = this;
 
     this.error = null;
     axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/api/employees/" + this.$route.params.id + "/edit").then(function (response) {
-      _this4.employe = response.data;
-      _this4.loaded = true;
+      _this5.employe = response.data;
+      _this5.loaded = true;
     })["catch"](function (error) {
-      _this4.error = error.response.data || error.message;
+      _this5.error = error.response.data || error.message;
       console.log(error);
     });
   }
@@ -2297,22 +2335,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "Employees",
   data: function data() {
     return {
-      erorr: false,
+      erorrMy: false,
+      erorrMsg: "",
       status: false,
-      message: null,
       employees: {
         data: null,
         links: {
@@ -2327,45 +2357,27 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     this.fetchData();
   },
-  updated: function updated() {},
   methods: {
     fetchData: function fetchData(pagi) {
       var _this = this;
 
-      this.error = null;
       pagi = pagi || "/api/employees";
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(pagi).then(function (response) {
         _this.employees = response.data;
       })["catch"](function (error) {
-        _this.error = error.response.data.message || error.message;
+        _this.erorrMy = true;
+        _this.erorrMsg = error;
       });
     },
     sortFioData: function sortFioData() {
       var _this2 = this;
 
-      this.error = null;
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/api/employees/sortfio").then(function (response) {
         _this2.employees = response.data.data;
       })["catch"](function (error) {
-        _this2.error = error.response.data.message || error.message;
+        _this2.erorrMy = true;
+        _this2.erorrMsg = error;
       });
-    },
-    deleteEmpoyes: function deleteEmpoyes(id, index) {
-      var _this3 = this;
-
-      var conf = confirm("Вы точно хотите удалиь этого сотрудника?");
-
-      if (conf === true) {
-        this.message = null;
-        axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]("/api/employees/" + id).then(function (response) {
-          _this3.employees.data.splice(index, 1);
-
-          _this3.message = response.data.message;
-          _this3.status = true;
-        })["catch"](function (error) {
-          _this3.error = error.response.data.message || error.message;
-        });
-      }
     }
   }
 });
@@ -37906,9 +37918,13 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-3 border" }, [
+  return _c("div", { staticClass: "jumbotron p-0" }, [
+    _vm._m(0),
+    _vm._v(" "),
+    _c("div", { staticClass: "row mt-4" }, [
+      _c("div", { staticClass: "col" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "col border" }, [
         _c("form", [
           _c("div", { staticClass: "form-group" }, [
             _c("label", { staticClass: "pt-3", attrs: { for: "file" } }, [
@@ -37953,7 +37969,38 @@ var render = function() {
         ])
       ]),
       _vm._v(" "),
-      _c("div", { staticClass: "col-5" }, [
+      _c("div", { staticClass: "col" }, [
+        _vm.status
+          ? _c(
+              "div",
+              {
+                staticClass: "alert alert-warning alert-dismissible",
+                attrs: { role: "alert" }
+              },
+              [
+                _c("strong", [_vm._v(_vm._s(_vm.msg) + "!")]),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "close",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        _vm.status = false
+                      }
+                    }
+                  },
+                  [
+                    _c("span", { attrs: { "aria-hidden": "true" } }, [
+                      _vm._v("×")
+                    ])
+                  ]
+                )
+              ]
+            )
+          : _vm._e(),
+        _vm._v(" "),
         !_vm.loaded
           ? _c("div", [_vm._v("Загрузка...")])
           : _c(
@@ -37997,7 +38044,8 @@ var render = function() {
                 _vm._v(" "),
                 _c("div", { staticClass: "form-group" }, [
                   _c("label", { attrs: { for: "position" } }, [
-                    _vm._v("Должность")
+                    _vm._v("\n            Должность\n            "),
+                    _c("b", [_vm._v(_vm._s(_vm.employe.position))])
                   ]),
                   _vm._v(" "),
                   _c(
@@ -38029,30 +38077,25 @@ var render = function() {
                         }
                       }
                     },
-                    _vm._l(_vm.positions, function(posit, index) {
-                      return _c(
-                        "option",
-                        { key: index, domProps: { value: { id: posit.id } } },
-                        [
-                          _vm._v(
-                            "\n              " +
-                              _vm._s(posit.name_position) +
-                              "\n              \\ Оклад: " +
-                              _vm._s(posit.salary_position) +
-                              "\n              id" +
-                              _vm._s(posit.id) +
-                              "\n            "
-                          )
-                        ]
-                      )
-                    }),
-                    0
+                    [
+                      _c("option", { attrs: { disabled: "", value: "" } }, [
+                        _vm._v("Выберите должность")
+                      ]),
+                      _vm._v(" "),
+                      _vm._l(_vm.positions, function(posit, index) {
+                        return _c("option", { key: index }, [
+                          _vm._v(_vm._s(posit.name_position))
+                        ])
+                      })
+                    ],
+                    2
                   )
                 ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "form-group" }, [
                   _c("label", { attrs: { for: "employment" } }, [
-                    _vm._v("Дата приема на работу")
+                    _vm._v("\n            Дата приема:\n            "),
+                    _c("b", [_vm._v(_vm._s(_vm.employe.employment))])
                   ]),
                   _vm._v(" "),
                   _c("input", {
@@ -38065,7 +38108,7 @@ var render = function() {
                       }
                     ],
                     staticClass: "form-control",
-                    attrs: { id: "employment", type: "text" },
+                    attrs: { id: "employment", type: "date" },
                     domProps: { value: _vm.employe.employment },
                     on: {
                       input: function($event) {
@@ -38118,7 +38161,7 @@ var render = function() {
                 _vm._v(" "),
                 _c("div", { staticClass: "form-group" }, [
                   _c("label", { attrs: { for: "name_head_depart" } }, [
-                    _vm._v("Текущий начальник: "),
+                    _vm._v("\n            Текущий начальник:\n            "),
                     _c("b", [
                       _vm._v(_vm._s(_vm.employe.name_head_depart) + ".")
                     ])
@@ -38160,11 +38203,7 @@ var render = function() {
                       _vm._v(" "),
                       _vm._l(_vm.headDepartametns, function(head, index) {
                         return _c("option", { key: index }, [
-                          _vm._v(
-                            "\n              " +
-                              _vm._s(head.name_head_depart) +
-                              "\n              "
-                          )
+                          _vm._v(_vm._s(head.name_head_depart))
                         ])
                       })
                     ],
@@ -38176,35 +38215,49 @@ var render = function() {
                   _c(
                     "button",
                     {
-                      staticClass: "btn btn-outline-primary",
-                      attrs: { type: "button" }
+                      staticClass: "btn btn-primary",
+                      attrs: { type: "submit", disabled: _vm.saving }
                     },
-                    [
-                      _c(
-                        "router-link",
-                        { attrs: { to: { name: "employees" } } },
-                        [_vm._v("Возвратиться")]
-                      )
-                    ],
-                    1
+                    [_vm._v("Обновить")]
                   ),
                   _vm._v(" "),
                   _c(
                     "button",
                     {
-                      staticClass: "btn btn-primary",
-                      attrs: { type: "submit", disabled: _vm.saving }
+                      staticClass: "btn btn-outline-danger",
+                      attrs: { type: "button" },
+                      on: {
+                        click: function($event) {
+                          return _vm.deleteEmpoye()
+                        }
+                      }
                     },
-                    [_vm._v("Обновить")]
+                    [_vm._v("Удалить")]
+                  ),
+                  _vm._v(
+                    "\n          " + _vm._s(this.employe.id) + "\n        "
                   )
                 ])
               ]
             )
-      ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col" })
     ])
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      { staticClass: "row justify-content-center pt-4 pb-3 bg-info border" },
+      [_c("h3", [_vm._v("Работа с карточкой сотрудника")])]
+    )
+  }
+]
 render._withStripped = true
 
 
@@ -38227,273 +38280,231 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _vm._m(0),
-    _vm._v(" "),
-    _c("br"),
-    _vm._v(" "),
-    _c("div", { staticClass: "row" }, [
-      _vm.status
-        ? _c(
-            "div",
-            {
-              staticClass: "alert alert-warning alert-dismissible",
-              attrs: { role: "alert" }
-            },
-            [
-              _c("strong", [_vm._v(_vm._s(_vm.message) + "!")]),
+    _vm.erorrMy
+      ? _c("div", [
+          _c("p", [
+            _vm._v("\n      " + _vm._s(_vm.erorrMsg) + "\n      "),
+            _c("br"),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-warning",
+                attrs: { type: "button" },
+                on: {
+                  click: function($event) {
+                    $event.preventDefault()
+                    return _vm.fetchData()
+                  }
+                }
+              },
+              [_vm._v("Повторить")]
+            )
+          ])
+        ])
+      : _c("div", { staticClass: "row" }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c("br"),
+          _vm._v(" "),
+          _c("div", { staticClass: "row" }, [
+            _c("table", { staticClass: "table table-hover" }, [
+              _c("thead", { staticClass: "thead-dark" }, [
+                _c("tr", [
+                  _c("th", { attrs: { scope: "col" } }, [_vm._v("id")]),
+                  _vm._v(" "),
+                  _c("th", { attrs: { scope: "col" } }, [
+                    _vm._v("\n              ФИО\n              "),
+                    _c(
+                      "a",
+                      { attrs: { href: "#" }, on: { click: _vm.sortFioData } },
+                      [_vm._v("⇓")]
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _vm._m(1),
+                  _vm._v(" "),
+                  _vm._m(2),
+                  _vm._v(" "),
+                  _vm._m(3),
+                  _vm._v(" "),
+                  _vm._m(4),
+                  _vm._v(" "),
+                  _c("th", { attrs: { scope: "col" } }, [_vm._v("Фото")]),
+                  _vm._v(" "),
+                  _c("th", { attrs: { scope: "col" } }, [_vm._v("Действие")])
+                ]),
+                _vm._v(" "),
+                _vm._m(5)
+              ]),
               _vm._v(" "),
               _c(
-                "button",
-                {
-                  staticClass: "close",
-                  attrs: { type: "button" },
-                  on: {
-                    click: function($event) {
-                      _vm.status = false
-                    }
-                  }
-                },
-                [
-                  _c("span", { attrs: { "aria-hidden": "true" } }, [
-                    _vm._v("×")
+                "tbody",
+                _vm._l(_vm.employees.data, function(item, index) {
+                  return _c("tr", { key: index }, [
+                    _c("td", [_vm._v(_vm._s(item.id))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(item.name))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(item.position))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(item.employment))]),
+                    _vm._v(" "),
+                    _c("td", [
+                      _vm._v(
+                        _vm._s(Math.ceil(item.salary_position * item.ratio)) +
+                          " руб."
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(item.name_head_depart))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(item.id))]),
+                    _vm._v(" "),
+                    _c("td", [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-outline-secondary",
+                          attrs: { type: "button" }
+                        },
+                        [
+                          _c(
+                            "router-link",
+                            {
+                              attrs: {
+                                to: {
+                                  name: "employees.edit",
+                                  params: { id: item.id }
+                                }
+                              }
+                            },
+                            [_c("span", [_vm._v("Изменить")])]
+                          )
+                        ],
+                        1
+                      )
+                    ])
                   ])
-                ]
-              )
-            ]
-          )
-        : _vm._e(),
-      _vm._v(" "),
-      _vm.error
-        ? _c("div", { staticClass: "error" }, [
-            _c("p", [_vm._v(_vm._s(_vm.error ? _vm.erorr : ""))]),
-            _vm._v(" "),
-            _c("p", [
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-warning",
-                  attrs: { type: "button" },
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      return _vm.fetchData()
-                    }
-                  }
-                },
-                [_vm._v("Повторить")]
-              )
-            ])
-          ])
-        : _vm._e(),
-      _vm._v(" "),
-      _c("table", { staticClass: "table table-hover" }, [
-        _c("thead", { staticClass: "thead-dark" }, [
-          _c("tr", [
-            _c("th", { attrs: { scope: "col" } }, [_vm._v("id")]),
-            _vm._v(" "),
-            _c("th", { attrs: { scope: "col" } }, [
-              _vm._v("\n            ФИО\n            "),
-              _c(
-                "a",
-                { attrs: { href: "#" }, on: { click: _vm.sortFioData } },
-                [_vm._v("⇓")]
+                }),
+                0
               )
             ]),
             _vm._v(" "),
-            _vm._m(1),
+            _c("div", { staticClass: "row" }, [
+              _c("div", { staticClass: "col-md-8" }, [
+                _c("nav", [
+                  _c("ul", { staticClass: "pagination" }, [
+                    _c(
+                      "li",
+                      {
+                        staticClass: "page-item",
+                        class: { disabled: !_vm.employees.links.first }
+                      },
+                      [
+                        _c(
+                          "a",
+                          {
+                            staticClass: "page-link",
+                            attrs: { href: "#" },
+                            on: {
+                              click: function($event) {
+                                return _vm.fetchData(_vm.employees.links.first)
+                              }
+                            }
+                          },
+                          [_vm._v("«")]
+                        )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "li",
+                      {
+                        staticClass: "page-item",
+                        class: { disabled: !_vm.employees.links.prev }
+                      },
+                      [
+                        _c(
+                          "a",
+                          {
+                            staticClass: "page-link",
+                            attrs: { href: "#" },
+                            on: {
+                              click: function($event) {
+                                return _vm.fetchData(_vm.employees.links.prev)
+                              }
+                            }
+                          },
+                          [_vm._v("Назад")]
+                        )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "li",
+                      {
+                        staticClass: "page-item",
+                        class: { disabled: !_vm.employees.links.next }
+                      },
+                      [
+                        _c(
+                          "a",
+                          {
+                            staticClass: "page-link",
+                            attrs: { href: "#" },
+                            on: {
+                              click: function($event) {
+                                return _vm.fetchData(_vm.employees.links.next)
+                              }
+                            }
+                          },
+                          [_vm._v("Вперёд")]
+                        )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "li",
+                      {
+                        staticClass: "page-item",
+                        class: { disabled: !_vm.employees.links.last }
+                      },
+                      [
+                        _c(
+                          "a",
+                          {
+                            staticClass: "page-link",
+                            attrs: { href: "#" },
+                            on: {
+                              click: function($event) {
+                                return _vm.fetchData(_vm.employees.links.last)
+                              }
+                            }
+                          },
+                          [_vm._v("»")]
+                        )
+                      ]
+                    )
+                  ])
+                ])
+              ])
+            ]),
             _vm._v(" "),
-            _vm._m(2),
-            _vm._v(" "),
-            _vm._m(3),
-            _vm._v(" "),
-            _vm._m(4),
-            _vm._v(" "),
-            _c("th", { attrs: { scope: "col" } }, [_vm._v("Фото")]),
-            _vm._v(" "),
-            _c("th", { attrs: { scope: "col" } }, [_vm._v("Действие")])
-          ]),
-          _vm._v(" "),
-          _vm._m(5)
-        ]),
-        _vm._v(" "),
-        _c(
-          "tbody",
-          _vm._l(_vm.employees.data, function(item, index) {
-            return _c("tr", { key: index }, [
-              _c("td", [_vm._v(_vm._s(item.id))]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(item.name))]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(item.position))]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(item.employment))]),
-              _vm._v(" "),
-              _c("td", [
+            _c("div", { staticClass: "col-md-4" }, [
+              _c("div", [
                 _vm._v(
-                  _vm._s(Math.ceil(item.salary_position * item.ratio)) + " руб."
+                  "Страница : " +
+                    _vm._s(_vm.employees.meta.from) +
+                    " - " +
+                    _vm._s(_vm.employees.meta.to)
                 )
               ]),
               _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(item.name_head_depart))]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(item.id))]),
-              _vm._v(" "),
-              _c("td", [
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-outline-secondary",
-                    attrs: { type: "button" }
-                  },
-                  [
-                    _c(
-                      "router-link",
-                      {
-                        attrs: {
-                          to: {
-                            name: "employees.edit",
-                            params: { id: item.id }
-                          }
-                        }
-                      },
-                      [_c("span", [_vm._v("Изменить")])]
-                    )
-                  ],
-                  1
-                ),
-                _vm._v(" "),
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-outline-danger",
-                    attrs: { type: "button" },
-                    on: {
-                      click: function($event) {
-                        return _vm.deleteEmpoyes(item.id, index)
-                      }
-                    }
-                  },
-                  [_vm._v("Удалить")]
-                )
-              ])
-            ])
-          }),
-          0
-        )
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "row" }, [
-        _c("div", { staticClass: "col-md-8" }, [
-          _c("nav", [
-            _c("ul", { staticClass: "pagination" }, [
-              _c(
-                "li",
-                {
-                  staticClass: "page-item",
-                  class: { disabled: !_vm.employees.links.first }
-                },
-                [
-                  _c(
-                    "a",
-                    {
-                      staticClass: "page-link",
-                      attrs: { href: "#" },
-                      on: {
-                        click: function($event) {
-                          return _vm.fetchData(_vm.employees.links.first)
-                        }
-                      }
-                    },
-                    [_vm._v("«")]
-                  )
-                ]
-              ),
-              _vm._v(" "),
-              _c(
-                "li",
-                {
-                  staticClass: "page-item",
-                  class: { disabled: !_vm.employees.links.prev }
-                },
-                [
-                  _c(
-                    "a",
-                    {
-                      staticClass: "page-link",
-                      attrs: { href: "#" },
-                      on: {
-                        click: function($event) {
-                          return _vm.fetchData(_vm.employees.links.prev)
-                        }
-                      }
-                    },
-                    [_vm._v("Назад")]
-                  )
-                ]
-              ),
-              _vm._v(" "),
-              _c(
-                "li",
-                {
-                  staticClass: "page-item",
-                  class: { disabled: !_vm.employees.links.next }
-                },
-                [
-                  _c(
-                    "a",
-                    {
-                      staticClass: "page-link",
-                      attrs: { href: "#" },
-                      on: {
-                        click: function($event) {
-                          return _vm.fetchData(_vm.employees.links.next)
-                        }
-                      }
-                    },
-                    [_vm._v("Вперёд")]
-                  )
-                ]
-              ),
-              _vm._v(" "),
-              _c(
-                "li",
-                {
-                  staticClass: "page-item",
-                  class: { disabled: !_vm.employees.links.last }
-                },
-                [
-                  _c(
-                    "a",
-                    {
-                      staticClass: "page-link",
-                      attrs: { href: "#" },
-                      on: {
-                        click: function($event) {
-                          return _vm.fetchData(_vm.employees.links.last)
-                        }
-                      }
-                    },
-                    [_vm._v("»")]
-                  )
-                ]
-              )
+              _c("div", [_vm._v("Всего: " + _vm._s(_vm.employees.meta.total))])
             ])
           ])
         ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-md-4" }, [
-        _vm._v(
-          "\n      Страница : " +
-            _vm._s(_vm.employees.meta.from) +
-            " - " +
-            _vm._s(_vm.employees.meta.to) +
-            "\n      Всего: " +
-            _vm._s(_vm.employees.meta.total) +
-            "\n    "
-        )
-      ])
-    ])
   ])
 }
 var staticRenderFns = [
@@ -38502,20 +38513,9 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-2" }, [
-        _c("div", [
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-secondary btn-sm",
-              attrs: { type: "button" }
-            },
-            [_vm._v("+ Добавить сотрудника")]
-          )
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-5" }, [
+      _c("div", { staticClass: "col" }, [
+        _c("p", [_vm._v("Cортировать по:")]),
+        _vm._v(" "),
         _c("div", { staticClass: "form-check form-check-inline" }, [
           _c("input", {
             staticClass: "form-check-input",
@@ -38595,7 +38595,7 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("th", { attrs: { scope: "col" } }, [
-      _vm._v("\n            Должность\n            "),
+      _vm._v("\n              Должность\n              "),
       _c("a", { attrs: { href: "#" } }, [_vm._v("⇓")])
     ])
   },
@@ -38604,7 +38604,7 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("th", { attrs: { scope: "col" } }, [
-      _vm._v("\n            Дата приёма\n            "),
+      _vm._v("\n              Дата приёма\n              "),
       _c("a", { attrs: { href: "#" } }, [_vm._v("⇓")])
     ])
   },
@@ -38613,7 +38613,7 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("th", { attrs: { scope: "col" } }, [
-      _vm._v("\n            Размер з\\п\n            "),
+      _vm._v("\n              Размер з\\п\n              "),
       _c("a", { attrs: { href: "#" } }, [_vm._v("⇓")])
     ])
   },
@@ -38622,7 +38622,7 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("th", { attrs: { scope: "col" } }, [
-      _vm._v("\n            Начальник\n            "),
+      _vm._v("\n              Начальник\n              "),
       _c("a", { attrs: { href: "#" } }, [_vm._v("⇓")])
     ])
   },
@@ -38746,7 +38746,13 @@ var staticRenderFns = [
       _vm._v(" "),
       _c("td", { staticClass: "bg-secondary" }),
       _vm._v(" "),
-      _c("td", { staticClass: "bg-secondary" })
+      _c("td", { staticClass: "bg-secondary" }, [
+        _c(
+          "button",
+          { staticClass: "btn btn-success", attrs: { type: "button" } },
+          [_vm._v("+ Добавить сотрудника")]
+        )
+      ])
     ])
   }
 ]

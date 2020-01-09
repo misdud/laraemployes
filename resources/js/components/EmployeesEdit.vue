@@ -1,27 +1,36 @@
 <template>
-  <div>
-    <div class="row">
-      <!-- {{ employe }}
-    {{ employe.employment }}
-    <hr />
-      {{ headDepartametns }}-->
-      <!-- {{ positions }} -->
-      <div class="col-3 border">
-        <form >
+  <div class="jumbotron p-0">
+    <div class="row justify-content-center pt-4 pb-3 bg-info border">
+      <h3>Работа с карточкой сотрудника</h3>
+    </div>
+    <div class="row mt-4">
+      <div class="col"></div>
+      <div class="col border">
+        <form>
           <div class="form-group">
-           <label for="file" class="pt-3">Фото сотрудника:</label>
-           <br />
-             <img v-if="photo.photoLink" :src="photo.photoLink" height="240 px" width="240 px" />
-              <img v-else :src="photo.photoLinkDefault" height="240 px" width="240 px" />
-            <input type="file" id="file" ref="file" v-on:change="onFileSelected"  class="form-control-file mt-3"/>
-            <button v-on:click="onUpload" type="button" class="btn btn-primary mt-3" >Загрузить</button>
-
-        </div>
+            <label for="file" class="pt-3">Фото сотрудника:</label>
+            <br />
+            <img v-if="photo.photoLink" :src="photo.photoLink" height="240 px" width="240 px" />
+            <img v-else :src="photo.photoLinkDefault" height="240 px" width="240 px" />
+            <input
+              type="file"
+              id="file"
+              ref="file"
+              v-on:change="onFileSelected"
+              class="form-control-file mt-3"
+            />
+            <button v-on:click="onUpload" type="button" class="btn btn-primary mt-3">Загрузить</button>
+          </div>
         </form>
-
       </div>
 
-      <div class="col-5">
+      <div class="col">
+        <div v-if="status" class="alert alert-warning alert-dismissible" role="alert">
+          <strong>{{ msg }}!</strong>
+          <button v-on:click="status=false" type="button" class="close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
         <div v-if="! loaded">Загрузка...</div>
         <form v-on:submit.prevent="onSubmit($event)" v-else>
           <div class="form-group">
@@ -29,23 +38,25 @@
             <input class="form-control" id="employe" v-model.lazy="employe.name" />
           </div>
           <div class="form-group">
-            <label for="position">Должность</label>
+            <label for="position">
+              Должность
+              <b>{{ employe.position}}</b>
+            </label>
             <select class="form-control" id="position" v-model="selectedPosit">
+              <option disabled value>Выберите должность</option>
               <option
                 v-for="(posit, index) in positions"
                 v-bind:key="index"
-                v-bind:value="{ id: posit.id }"
-              >
-                {{ posit.name_position}}
-                \ Оклад: {{ posit.salary_position }}
-                id{{ posit.id }}
-              </option>
+              >{{ posit.name_position}}</option>
             </select>
           </div>
 
           <div class="form-group">
-            <label for="employment">Дата приема на работу</label>
-            <input class="form-control" id="employment" type="text" v-model="employe.employment" />
+            <label for="employment">
+              Дата приема:
+              <b>{{employe.employment}}</b>
+            </label>
+            <input class="form-control" id="employment" type="date" v-model="employe.employment" />
           </div>
           <div class="form-group">
             <label for="ratio">КТУ</label>
@@ -61,27 +72,26 @@
           </div>
           <p>Текущая зарплата: {{ Math.ceil(allSalary) }}</p>
           <div class="form-group">
-            <label for="name_head_depart">Текущий начальник: <b>{{ employe.name_head_depart}}.</b> </label>
+            <label for="name_head_depart">
+              Текущий начальник:
+              <b>{{ employe.name_head_depart}}.</b>
+            </label>
             <select class="form-control" id="name_head_depart" v-model="selectedHedDep">
-              <option disabled value="">Выберите руководителя для смены</option>
+              <option disabled value>Выберите руководителя для смены</option>
               <option
                 v-for="(head, index) in headDepartametns"
                 v-bind:key="index"
-              >
-                {{ head.name_head_depart }}
-                <!-- {{ head.name }}
-                {{ head.id }} -->
-              </option>
+              >{{ head.name_head_depart }}</option>
             </select>
           </div>
           <div class="form-group">
-            <button type="button" class="btn btn-outline-primary">
-              <router-link :to="{ name: 'employees' }">Возвратиться</router-link>
-            </button>
             <button type="submit" :disabled="saving" class="btn btn-primary">Обновить</button>
+            <button type="button" class="btn btn-outline-danger" v-on:click="deleteEmpoye()">Удалить</button>
+            {{ this.employe.id}}
           </div>
         </form>
       </div>
+      <div class="col"></div>
     </div>
     <!-- {{ selected.id }} -->
   </div>
@@ -91,20 +101,18 @@ import axios from "axios";
 export default {
   data() {
     return {
-      photo:{
+      photo: {
         photoDat: null,
         photoLink: null,
         photoLinkDefault: "/storage/photos/no_photo.png"
       },
-      saving: null,
+      status: false,
       msg: "",
+      saving: null,
       headDepartametns: [],
       positions: [],
       error: null,
       loaded: false,
-      selectedPosit: {
-        id: ""
-      },
       employe: {
         id: "",
         name: "",
@@ -114,41 +122,51 @@ export default {
         salary_position: "",
         name_head_depart: ""
       },
-        selectedHedDep: "",
-        headDeprts:""
+      selectedHedDep: "",
+      headDeprts: "",
+      selectedPosit: "",
+      selPosit: ""
     };
   },
   computed: {
     allSalary: function() {
       return this.employe.ratio * this.employe.salary_position;
     }
-
   },
   watch: {},
   methods: {
     onSubmit(event) {
       this.saving = true;
 
-        this.headDeprts = '';
-      if(this.selectedHedDep !== ''){
-         this.headDeprts = this.selectedHedDep;
-      }else{
-         this.headDeprts = this.employe.name_head_depart;
+      if (this.selectedHedDep !== "") {
+        this.headDeprts = this.selectedHedDep;
+      } else {
+        this.headDeprts = this.employe.name_head_depart;
       }
       // console.log(this.headDeprts)
-
+      if (this.selectedPosit !== "") {
+        this.selPosit = this.selectedPosit;
+      } else {
+        this.selPosit = this.employe.position;
+      }
+      console.log(this.selPosit);
+      console.log(typeof this.employe.employment);
       axios
         .put("/api/employees/" + this.employe.id, {
           name: this.employe.name,
-          position: this.employe.position,
-          employment: this.employe.employment,
+          position: this.selPosit,
+          employment:
+            this.employe.employment == ""
+              ? this.employe.employment
+              : this.employe.employment,
           ratio: this.employe.ratio,
           name_head_depart: this.headDeprts
         })
         .then(response => {
-          this.msg = "Сотрудник обновлён";
           console.log(response + "сотруд обн");
           this.employe = response.data;
+          this.msg = "Сотрудник обновлён";
+          this.status = true;
         })
         .catch(error => {
           console.log(error);
@@ -158,7 +176,7 @@ export default {
     onFileSelected(e) {
       const file = this.$refs.file.files[0];
       this.photo.photoDat = file;
-      this.photo.photoLink = URL.createObjectURL(file)
+      this.photo.photoLink = URL.createObjectURL(file);
     },
 
     onUpload() {
@@ -174,7 +192,6 @@ export default {
           console.log(response);
         });
     },
-
     getHeadDepartament() {
       axios
         .get("/api/employees/headdeparts")
@@ -194,6 +211,21 @@ export default {
         .catch(error => {
           console.log(error);
         });
+    },
+    deleteEmpoye() {
+      let conf = confirm("Вы точно хотите удалиь этого сотрудника?");
+      if (conf === true) {
+        this.message = null;
+        axios
+          .delete("/api/employees/" + this.employe.id)
+          .then(response => {
+            this.$router.push({ name: "employees" });
+            alert("Сотрудник был удалён");
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      }
     }
   },
 

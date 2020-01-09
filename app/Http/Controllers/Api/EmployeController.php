@@ -121,11 +121,16 @@ class EmployeController extends Controller
             'name_head_depart' => 'required',
         ]);
 
+
+        //for search id departament
+        $nameHeadDepart = $request->name_head_depart;
+        $departamentId = Department::select('id')->where('name_head_depart', $nameHeadDepart)->first(); 
+
         $employe = Employe::find($id);
         $employe->full_name=$request->name;
        // $employe->employment=$request->employment;
         $employe->ratio=$request->ratio;
-        //$employe->id_departament=$request->id_departament;
+        $employe->id_departament=$departamentId->id;
         //$employe->id_positione=$request->id_positione;
         $employe->save();
 

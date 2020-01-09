@@ -1949,19 +1949,28 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      photoLink: "http://laraemployes/storage/photos/123.jpeg",
-      selectedFile: "",
+      photo: {
+        photoDat: null,
+        photoLink: null,
+        photoLinkDefault: "/storage/photos/no_photo.png"
+      },
       saving: null,
       msg: "",
       headDepartametns: [],
       positions: [],
       error: null,
       loaded: false,
-      selected: {
+      selectedPosit: {
         id: ""
       },
       employe: {
@@ -1972,7 +1981,9 @@ __webpack_require__.r(__webpack_exports__);
         ratio: "",
         salary_position: "",
         name_head_depart: ""
-      }
+      },
+      selectedHedDep: "",
+      headDeprts: ""
     };
   },
   computed: {
@@ -1986,12 +1997,21 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       this.saving = true;
+      this.headDeprts = '';
+
+      if (this.selectedHedDep !== '') {
+        this.headDeprts = this.selectedHedDep;
+      } else {
+        this.headDeprts = this.employe.name_head_depart;
+      } // console.log(this.headDeprts)
+
+
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.put("/api/employees/" + this.employe.id, {
         name: this.employe.name,
         position: this.employe.position,
         employment: this.employe.employment,
         ratio: this.employe.ratio,
-        name_head_depart: this.employe.name_head_depart
+        name_head_depart: this.headDeprts
       }).then(function (response) {
         _this.msg = "Сотрудник обновлён";
         console.log(response + "сотруд обн");
@@ -2002,9 +2022,10 @@ __webpack_require__.r(__webpack_exports__);
         return _this.saving = false;
       });
     },
-    onFileSelected: function onFileSelected() {
-      console.log(event);
-      this.selectedFile = this.$refs.file.files[0];
+    onFileSelected: function onFileSelected(e) {
+      var file = this.$refs.file.files[0];
+      this.photo.photoDat = file;
+      this.photo.photoLink = URL.createObjectURL(file);
     },
     onUpload: function onUpload() {
       var settings = {
@@ -2013,7 +2034,7 @@ __webpack_require__.r(__webpack_exports__);
         }
       };
       var formData = new FormData();
-      formData.append("file", this.selectedFile, this.selectedFile.name);
+      formData.append("file", this.photo.photoDat, this.photo.photoDat.name);
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("/api/employees/storephotos", formData, settings).then(function (response) {
         console.log(response);
       })["catch"](function (response) {
@@ -37887,31 +37908,52 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", [
     _c("div", { staticClass: "row" }, [
-      _c("hr"),
-      _vm._v(" "),
-      _c("div", { staticClass: "col" }, [
-        _c("img", {
-          staticClass: "img-responsive",
-          attrs: {
-            src: _vm.photoLink,
-            alt: "Image",
-            height: "50%",
-            width: "50%"
-          }
-        }),
-        _vm._v(" "),
-        _c("br"),
-        _vm._v(" "),
-        _c("input", {
-          ref: "file",
-          attrs: { type: "file", id: "file" },
-          on: { change: _vm.onFileSelected }
-        }),
-        _vm._v(" "),
-        _c("button", { on: { click: _vm.onUpload } }, [_vm._v("Загрузить")])
+      _c("div", { staticClass: "col-3 border" }, [
+        _c("form", [
+          _c("div", { staticClass: "form-group" }, [
+            _c("label", { staticClass: "pt-3", attrs: { for: "file" } }, [
+              _vm._v("Фото сотрудника:")
+            ]),
+            _vm._v(" "),
+            _c("br"),
+            _vm._v(" "),
+            _vm.photo.photoLink
+              ? _c("img", {
+                  attrs: {
+                    src: _vm.photo.photoLink,
+                    height: "240 px",
+                    width: "240 px"
+                  }
+                })
+              : _c("img", {
+                  attrs: {
+                    src: _vm.photo.photoLinkDefault,
+                    height: "240 px",
+                    width: "240 px"
+                  }
+                }),
+            _vm._v(" "),
+            _c("input", {
+              ref: "file",
+              staticClass: "form-control-file mt-3",
+              attrs: { type: "file", id: "file" },
+              on: { change: _vm.onFileSelected }
+            }),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-primary mt-3",
+                attrs: { type: "button" },
+                on: { click: _vm.onUpload }
+              },
+              [_vm._v("Загрузить")]
+            )
+          ])
+        ])
       ]),
       _vm._v(" "),
-      _c("div", { staticClass: "col" }, [
+      _c("div", { staticClass: "col-5" }, [
         !_vm.loaded
           ? _c("div", [_vm._v("Загрузка...")])
           : _c(
@@ -37965,8 +38007,8 @@ var render = function() {
                         {
                           name: "model",
                           rawName: "v-model",
-                          value: _vm.selected,
-                          expression: "selected"
+                          value: _vm.selectedPosit,
+                          expression: "selectedPosit"
                         }
                       ],
                       staticClass: "form-control",
@@ -37981,7 +38023,7 @@ var render = function() {
                               var val = "_value" in o ? o._value : o.value
                               return val
                             })
-                          _vm.selected = $event.target.multiple
+                          _vm.selectedPosit = $event.target.multiple
                             ? $$selectedVal
                             : $$selectedVal[0]
                         }
@@ -38068,45 +38110,65 @@ var render = function() {
                   })
                 ]),
                 _vm._v(" "),
-                _c("p", [_vm._v("Текущая зарплата: " + _vm._s(_vm.allSalary))]),
+                _c("p", [
+                  _vm._v(
+                    "Текущая зарплата: " + _vm._s(Math.ceil(_vm.allSalary))
+                  )
+                ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "form-group" }, [
                   _c("label", { attrs: { for: "name_head_depart" } }, [
-                    _vm._v("Начальник")
+                    _vm._v("Текущий начальник: "),
+                    _c("b", [
+                      _vm._v(_vm._s(_vm.employe.name_head_depart) + ".")
+                    ])
                   ]),
                   _vm._v(" "),
                   _c(
                     "select",
                     {
-                      staticClass: "form-control",
-                      attrs: { id: "name_head_depart" }
-                    },
-                    _vm._l(_vm.headDepartametns, function(head, index) {
-                      return _c(
-                        "option",
+                      directives: [
                         {
-                          key: index,
-                          domProps: {
-                            selected:
-                              head.name_head_depart ===
-                              _vm.employe.name_head_depart,
-                            value: head.id
-                          }
-                        },
-                        [
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.selectedHedDep,
+                          expression: "selectedHedDep"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { id: "name_head_depart" },
+                      on: {
+                        change: function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.selectedHedDep = $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        }
+                      }
+                    },
+                    [
+                      _c("option", { attrs: { disabled: "", value: "" } }, [
+                        _vm._v("Выберите руководителя для смены")
+                      ]),
+                      _vm._v(" "),
+                      _vm._l(_vm.headDepartametns, function(head, index) {
+                        return _c("option", { key: index }, [
                           _vm._v(
                             "\n              " +
                               _vm._s(head.name_head_depart) +
-                              " \\\n              " +
-                              _vm._s(head.name) +
-                              "\n              id" +
-                              _vm._s(head.id) +
-                              "\n            "
+                              "\n              "
                           )
-                        ]
-                      )
-                    }),
-                    0
+                        ])
+                      })
+                    ],
+                    2
                   )
                 ]),
                 _vm._v(" "),
@@ -38139,8 +38201,7 @@ var render = function() {
               ]
             )
       ])
-    ]),
-    _vm._v("\n  " + _vm._s(_vm.selected.id) + "\n")
+    ])
   ])
 }
 var staticRenderFns = []
@@ -38267,7 +38328,11 @@ var render = function() {
               _vm._v(" "),
               _c("td", [_vm._v(_vm._s(item.employment))]),
               _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(item.salary_position * item.ratio))]),
+              _c("td", [
+                _vm._v(
+                  _vm._s(Math.ceil(item.salary_position * item.ratio)) + " руб."
+                )
+              ]),
               _vm._v(" "),
               _c("td", [_vm._v(_vm._s(item.name_head_depart))]),
               _vm._v(" "),

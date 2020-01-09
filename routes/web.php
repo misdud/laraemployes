@@ -10,10 +10,15 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+use App\Department;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::get('test', function () {
+    $departamentId = Department::select('id')->where('name_head_depart', 'Фёдор Алексеевич Белоусовa')->first();
+    dump($departamentId->id); 
 });
 
 

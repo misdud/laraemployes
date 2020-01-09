@@ -161,7 +161,7 @@
             <td>{{ item.name }}</td>
             <td>{{ item.position }}</td>
             <td>{{ item.employment }}</td>
-            <td>{{ item.salary_position * item.ratio }}</td>
+            <td>{{ Math.ceil(item.salary_position * item.ratio) }} руб.</td>
             <td>{{ item.name_head_depart }}</td>
             <td>{{ item.id }}</td>
             <td>

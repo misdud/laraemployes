@@ -9,7 +9,7 @@
     </div>
     <div class="row" v-else>
       <div class="row">
-        <div class="col">
+        <div class="col bg-">
           <p>Cортировать по:</p>
           <div class="form-check form-check-inline">
             <input

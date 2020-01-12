@@ -151,9 +151,7 @@ class EmployeController extends Controller
     public function destroy($id)
     {
         $employees = Employe::findOrFail($id);
-
         $employees->delete();
-
         return response()->json(['message' => 'Сотрудник удалён']);
     }
 
@@ -191,9 +189,87 @@ class EmployeController extends Controller
 
     public function search(Request $request)
     {
+        //----search --fio and position
+        if (!empty($request->keywords) && !empty($request->selectedPosit)) {
+            $keyword = $request->keywords;
+            $namePosition = $request->selectedPosit;
+            $positionId = Position::select('id')
+                ->where('name_position', $namePosition)->first();
+            $employes = Employe::with('position', 'department')
+                ->where('full_name', 'like',  $keyword . '%')
+                ->where('id_positione', $positionId->id)
+                // ->orderBy($order)
+                ->paginate(10);
 
-        //$employes = Employe::where('name', $request->keywords)->get();
+            return  EmployeResource::collection($employes);
 
-        //return response()->json($employes);
+            //------search ----- only------fio
+        } elseif (!empty($request->keywords)) {
+            $keyword = $request->keywords;
+            $employes = Employe::with('position', 'department')
+                ->where('full_name', 'like',  $keyword . '%')
+
+                // ->orderBy($order)
+                ->paginate(10);
+
+            return  EmployeResource::collection($employes);
+
+            //-------search----only--position
+        } elseif (!empty($request->selectedPosit)) {
+            $namePosition = $request->selectedPosit;
+            $positionId = Position::select('id')
+                ->where('name_position', $namePosition)->first();
+
+            $employes = Employe::with('position', 'department')
+                ->where('id_positione', $positionId->id)
+                //->orderBy('full_name')
+                ->paginate(10);
+
+            return  EmployeResource::collection($employes);
+            //--------search ---only----date
+        } elseif (!empty($request->saerchDate)) {
+            $dateMy = date("Y-m-d", strtotime($request->saerchDate));
+            $employes = Employe::with('position', 'department')
+                ->where('employment', ">=",  $dateMy)
+                ->orderBy('employment')
+                ->paginate(10);
+            return  EmployeResource::collection($employes);
+
+            //----------search -----only----Salary
+        } elseif (!empty($request->saerchSalary)) {
+            $salaryPosition = (int) $request->saerchSalary;
+            $searhSalaryId = Position::where('salary_position', ">=", $salaryPosition)
+                ->where('salary_position', "<", 2500)
+                ->pluck("id")
+                ->toArray();
+
+            $employes = Employe::with('position', 'department')
+                ->whereIn('id_positione', $searhSalaryId)
+                ->orderBy('id_positione', 'desc', 'ratio')
+                ->paginate(10);
+            return  EmployeResource::collection($employes);
+
+            //------search only-----headDepart.....
+        } elseif (!empty($request->selectedDepart)) {
+            $nameDepart = $request->selectedDepart;
+            $departId = Department::select('id')
+                ->where('name_head_depart', $nameDepart)->first();
+
+            $employes = Employe::with('position', 'department')
+                ->where('id_departament', $departId->id)
+                ->orderBy('full_name')
+                ->paginate(10);
+            return  EmployeResource::collection($employes);
+            //----------default-------
+
+        } else {
+
+            $employes = Employe::with('position', 'department')
+                ->orderBy('full_name')
+                ->paginate(10);
+
+            return  EmployeResource::collection($employes);
+            //return response()->json($employes);
+        }
     }
 }

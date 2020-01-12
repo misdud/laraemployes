@@ -86,60 +86,45 @@
             <tr>
               <td class="bg-secondary"></td>
               <td class="bg-secondary">
-                <form class="form-inline">
-                  <input
-                    class="form-control mr-sm-2 w-50 border-right-1"
-                    width="7"
-                    type="search"
-                    placeholder="Введите фио"
-                    aria-label="Search"
-                  />
-                  <button class="btn btn-outline-success" type="submit">Найти</button>
-                </form>
+                <input
+                  class="form-control"
+                  width="10"
+                  type="text"
+                  placeholder="фио"
+                  v-model.lazy="keywords"
+                />
               </td>
               <td class="bg-secondary">
-                <form class="form-inline">
-                  <input
-                    class="form-control mr-sm-2 w-50"
-                    type="search"
-                    placeholder="Введите должность"
-                    aria-label="Search"
-                  />
-                  <button class="btn btn-outline-success" type="submit">Найти</button>
-                </form>
+                <select class="form-control" v-model="selectedPositEmpl">
+                  <option value></option>
+                  <option
+                    v-for="(posit, index) in positions"
+                    v-bind:key="index"
+                  >{{ posit.name_position}}</option>
+                </select>
               </td>
               <td class="bg-secondary">
-                <form class="form-inline">
-                  <input
-                    class="form-control mr-sm-2 w-50"
-                    type="date"
-                    placeholder="Введите дату"
-                    aria-label="Search"
-                  />
-                  <button class="btn btn-outline-success" type="submit">Найти</button>
-                </form>
+                <input class="form-control" type="date" v-model.lazy="saerchDate" />
               </td>
               <td class="bg-secondary">
-                <form class="form-inline">
-                  <input
-                    class="form-control mr-sm-2 w-50"
-                    type="number"
-                    placeholder="Введите сумму"
-                    aria-label="Search"
-                  />
-                  <button class="btn btn-outline-success" type="submit">Найти</button>
-                </form>
+                <input
+                  class="form-control"
+                  type="number"
+                  placeholder="Cумма"
+                  min="1500"
+                  max="2500"
+                  step="100"
+                  v-model.number="saerchSalary"
+                />
               </td>
               <td class="bg-secondary">
-                <form class="form-inline">
-                  <input
-                    class="form-control mr-sm-2 w-50"
-                    type="search"
-                    placeholder="Введите отдел"
-                    aria-label="Search"
-                  />
-                  <button class="btn btn-outline-success" type="submit">Найти</button>
-                </form>
+                <select class="form-control" v-model="selectedDepart">
+                  <option value></option>
+                  <option
+                    v-for="(head, index) in headDepartametns"
+                    v-bind:key="index"
+                  >{{ head.name_head_depart }}</option>
+                </select>
               </td>
               <td class="bg-secondary"></td>
               <td class="bg-secondary">
@@ -180,15 +165,27 @@
                 </li>
 
                 <li v-bind:class="{disabled:!employees.links.prev}" class="page-item">
-                  <a href="#" v-on:click="fetchData(employees.links.prev)" class="page-link">Назад</a>
+                  <a
+                    href="#"
+                    v-on:click="fetchDataSearch(employees.links.prev)"
+                    class="page-link"
+                  >Назад</a>
                 </li>
 
                 <li v-bind:class="{disabled:!employees.links.next}" class="page-item">
-                  <a href="#" v-on:click="fetchData(employees.links.next)" class="page-link">Вперёд</a>
+                  <a
+                    href="#"
+                    v-on:click="fetchDataSearch(employees.links.next)"
+                    class="page-link"
+                  >Вперёд</a>
                 </li>
 
                 <li v-bind:class="{disabled:!employees.links.last}" class="page-item">
-                  <a href="#" v-on:click="fetchData(employees.links.last)" class="page-link">&raquo;</a>
+                  <a
+                    href="#"
+                    v-on:click="fetchDataSearch(employees.links.last)"
+                    class="page-link"
+                  >&raquo;</a>
                 </li>
               </ul>
             </nav>
@@ -211,6 +208,15 @@ export default {
   name: "Employees",
   data() {
     return {
+      positions: [],
+      selectedPositEmpl: "",
+      headDepartametns: [],
+      selectedDepart: "",
+      keywords: "",
+      saerchDate: "",
+      saerchSalary: "",
+      //   order: "id_departament",
+      pagi: [],
       erorrMy: false,
       erorrMsg: "",
       status: false,
@@ -225,9 +231,32 @@ export default {
       }
     };
   },
+  watch: {
+    keywords(after, before) {
+      //   this.selectedPositEmpl = "";
+      this.fetchDataSearch();
+    },
+    selectedPositEmpl(after1, before1) {
+      this.saerchDate = "";
+      this.fetchDataSearch();
+    },
+    saerchDate(after2, before2) {
+      this.fetchDataSearch();
+      //console.log(after2, before2);
+      //return;
+    },
+    saerchSalary(after3, before3) {
+      this.fetchDataSearch();
+    },
+    selectedDepart(after4, before4) {
+      this.fetchDataSearch();
+    }
+  },
 
   mounted() {
     this.fetchData();
+    this.getPositions();
+    this.getHeadDepartament();
   },
   methods: {
     fetchData(pagi) {
@@ -240,6 +269,47 @@ export default {
         .catch(error => {
           this.erorrMy = true;
           this.erorrMsg = error;
+        });
+    },
+    fetchDataSearch(pagi) {
+      console.log(this.saerchSalary);
+      pagi = pagi || "/api/employees/search";
+      axios
+        .get(pagi, {
+          params: {
+            keywords: this.keywords,
+            selectedPosit: this.selectedPositEmpl,
+            saerchDate: this.saerchDate,
+            saerchSalary: this.saerchSalary,
+            selectedDepart: this.selectedDepart
+          }
+        })
+        .then(response => {
+          this.employees = response.data;
+        })
+        .catch(error => {
+          this.erorrMy = true;
+          this.erorrMsg = error;
+        });
+    },
+    getPositions() {
+      axios
+        .get("/api/employees/positions")
+        .then(response => {
+          this.positions = response.data;
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    getHeadDepartament() {
+      axios
+        .get("/api/employees/headdeparts")
+        .then(response => {
+          this.headDepartametns = response.data;
+        })
+        .catch(error => {
+          console.log(error);
         });
     },
     sortFioData() {

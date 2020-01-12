@@ -10,15 +10,26 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+
 use App\Department;
+use App\Employe;
+use App\Position;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
 Route::get('test', function () {
-    $departamentId = Department::select('id')->where('name_head_depart', 'Фёдор Алексеевич Белоусовa')->first();
-    dump($departamentId->id); 
+    $searhSalary = Position::where('salary_position', ">=", 1500)
+        ->where('salary_position', "<", 2500)
+        ->pluck("id")
+        ->toArray();
+    // $arrId = [];
+    // foreach ($searhSalary as $salaryId) {
+    //     $arrId[] .= $salaryId->id;
+    // }
+    dump($searhSalary);
+    exit();
 });
 
 
@@ -27,5 +38,3 @@ Auth::routes();
 Route::get('/{any}', 'HomeController@index')->where('any', '.*');
 
 //Route::get('/home', 'HomeController@index')->name('home');
-
-

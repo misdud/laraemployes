@@ -1852,6 +1852,24 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({});
 
 /***/ }),
@@ -2332,14 +2350,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "Employees",
   data: function data() {
     return {
+      positions: [],
+      selectedPositEmpl: "",
+      headDepartametns: [],
+      selectedDepart: "",
+      keywords: "",
+      saerchDate: "",
+      saerchSalary: "",
+      //   order: "id_departament",
+      pagi: [],
       erorrMy: false,
       erorrMsg: "",
       status: false,
@@ -2354,8 +2378,30 @@ __webpack_require__.r(__webpack_exports__);
       }
     };
   },
+  watch: {
+    keywords: function keywords(after, before) {
+      //   this.selectedPositEmpl = "";
+      this.fetchDataSearch();
+    },
+    selectedPositEmpl: function selectedPositEmpl(after1, before1) {
+      this.saerchDate = "";
+      this.fetchDataSearch();
+    },
+    saerchDate: function saerchDate(after2, before2) {
+      this.fetchDataSearch(); //console.log(after2, before2);
+      //return;
+    },
+    saerchSalary: function saerchSalary(after3, before3) {
+      this.fetchDataSearch();
+    },
+    selectedDepart: function selectedDepart(after4, before4) {
+      this.fetchDataSearch();
+    }
+  },
   mounted: function mounted() {
     this.fetchData();
+    this.getPositions();
+    this.getHeadDepartament();
   },
   methods: {
     fetchData: function fetchData(pagi) {
@@ -2369,14 +2415,52 @@ __webpack_require__.r(__webpack_exports__);
         _this.erorrMsg = error;
       });
     },
-    sortFioData: function sortFioData() {
+    fetchDataSearch: function fetchDataSearch(pagi) {
       var _this2 = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/api/employees/sortfio").then(function (response) {
-        _this2.employees = response.data.data;
+      console.log(this.saerchSalary);
+      pagi = pagi || "/api/employees/search";
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(pagi, {
+        params: {
+          keywords: this.keywords,
+          selectedPosit: this.selectedPositEmpl,
+          saerchDate: this.saerchDate,
+          saerchSalary: this.saerchSalary,
+          selectedDepart: this.selectedDepart
+        }
+      }).then(function (response) {
+        _this2.employees = response.data;
       })["catch"](function (error) {
         _this2.erorrMy = true;
         _this2.erorrMsg = error;
+      });
+    },
+    getPositions: function getPositions() {
+      var _this3 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/api/employees/positions").then(function (response) {
+        _this3.positions = response.data;
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    getHeadDepartament: function getHeadDepartament() {
+      var _this4 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/api/employees/headdeparts").then(function (response) {
+        _this4.headDepartametns = response.data;
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    sortFioData: function sortFioData() {
+      var _this5 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/api/employees/sortfio").then(function (response) {
+        _this5.employees = response.data.data;
+      })["catch"](function (error) {
+        _this5.erorrMy = true;
+        _this5.erorrMsg = error;
       });
     }
   }
@@ -37880,17 +37964,45 @@ var render = function() {
     _c("h1", [_vm._v("Vue\\Laravel (SPA)")]),
     _vm._v(" "),
     _c(
-      "p",
+      "nav",
+      { staticClass: "navbar navbar-expand-lg navbar-light bg-light" },
       [
-        _c("router-link", { attrs: { to: { name: "hierarchy" } } }, [
-          _vm._v("Иерархия")
-        ]),
-        _vm._v(" |\n        "),
-        _c("router-link", { attrs: { to: { name: "employees" } } }, [
-          _vm._v("Сотрудники")
+        _c("div", { staticClass: "collapse navbar-collapse" }, [
+          _c(
+            "ul",
+            { staticClass: "navbar-nav" },
+            [
+              _c(
+                "router-link",
+                {
+                  staticClass: "nav-item",
+                  attrs: {
+                    tag: "li",
+                    exact: "",
+                    to: "/",
+                    "active-class": "active"
+                  }
+                },
+                [_c("a", { staticClass: "nav-link" }, [_vm._v("Иерархия")])]
+              ),
+              _vm._v(" "),
+              _c(
+                "router-link",
+                {
+                  staticClass: "nav-item",
+                  attrs: {
+                    tag: "li",
+                    to: "/employees",
+                    "active-class": "active"
+                  }
+                },
+                [_c("a", { staticClass: "nav-link" }, [_vm._v("Сотрудники")])]
+              )
+            ],
+            1
+          )
         ])
-      ],
-      1
+      ]
     ),
     _vm._v(" "),
     _c("div", { staticClass: "container-fluid" }, [_c("router-view")], 1)
@@ -38335,7 +38447,175 @@ var render = function() {
                   _c("th", { attrs: { scope: "col" } }, [_vm._v("Действие")])
                 ]),
                 _vm._v(" "),
-                _vm._m(5)
+                _c("tr", [
+                  _c("td", { staticClass: "bg-secondary" }),
+                  _vm._v(" "),
+                  _c("td", { staticClass: "bg-secondary" }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model.lazy",
+                          value: _vm.keywords,
+                          expression: "keywords",
+                          modifiers: { lazy: true }
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { width: "10", type: "text", placeholder: "фио" },
+                      domProps: { value: _vm.keywords },
+                      on: {
+                        change: function($event) {
+                          _vm.keywords = $event.target.value
+                        }
+                      }
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c("td", { staticClass: "bg-secondary" }, [
+                    _c(
+                      "select",
+                      {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.selectedPositEmpl,
+                            expression: "selectedPositEmpl"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        on: {
+                          change: function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.selectedPositEmpl = $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          }
+                        }
+                      },
+                      [
+                        _c("option", { attrs: { value: "" } }),
+                        _vm._v(" "),
+                        _vm._l(_vm.positions, function(posit, index) {
+                          return _c("option", { key: index }, [
+                            _vm._v(_vm._s(posit.name_position))
+                          ])
+                        })
+                      ],
+                      2
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("td", { staticClass: "bg-secondary" }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model.lazy",
+                          value: _vm.saerchDate,
+                          expression: "saerchDate",
+                          modifiers: { lazy: true }
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "date" },
+                      domProps: { value: _vm.saerchDate },
+                      on: {
+                        change: function($event) {
+                          _vm.saerchDate = $event.target.value
+                        }
+                      }
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c("td", { staticClass: "bg-secondary" }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model.number",
+                          value: _vm.saerchSalary,
+                          expression: "saerchSalary",
+                          modifiers: { number: true }
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: {
+                        type: "number",
+                        placeholder: "Cумма",
+                        min: "1500",
+                        max: "2500",
+                        step: "100"
+                      },
+                      domProps: { value: _vm.saerchSalary },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.saerchSalary = _vm._n($event.target.value)
+                        },
+                        blur: function($event) {
+                          return _vm.$forceUpdate()
+                        }
+                      }
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c("td", { staticClass: "bg-secondary" }, [
+                    _c(
+                      "select",
+                      {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.selectedDepart,
+                            expression: "selectedDepart"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        on: {
+                          change: function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.selectedDepart = $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          }
+                        }
+                      },
+                      [
+                        _c("option", { attrs: { value: "" } }),
+                        _vm._v(" "),
+                        _vm._l(_vm.headDepartametns, function(head, index) {
+                          return _c("option", { key: index }, [
+                            _vm._v(_vm._s(head.name_head_depart))
+                          ])
+                        })
+                      ],
+                      2
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("td", { staticClass: "bg-secondary" }),
+                  _vm._v(" "),
+                  _vm._m(5)
+                ])
               ]),
               _vm._v(" "),
               _c(
@@ -38432,7 +38712,9 @@ var render = function() {
                             attrs: { href: "#" },
                             on: {
                               click: function($event) {
-                                return _vm.fetchData(_vm.employees.links.prev)
+                                return _vm.fetchDataSearch(
+                                  _vm.employees.links.prev
+                                )
                               }
                             }
                           },
@@ -38455,7 +38737,9 @@ var render = function() {
                             attrs: { href: "#" },
                             on: {
                               click: function($event) {
-                                return _vm.fetchData(_vm.employees.links.next)
+                                return _vm.fetchDataSearch(
+                                  _vm.employees.links.next
+                                )
                               }
                             }
                           },
@@ -38478,7 +38762,9 @@ var render = function() {
                             attrs: { href: "#" },
                             on: {
                               click: function($event) {
-                                return _vm.fetchData(_vm.employees.links.last)
+                                return _vm.fetchDataSearch(
+                                  _vm.employees.links.last
+                                )
                               }
                             }
                           },
@@ -38630,129 +38916,12 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("tr", [
-      _c("td", { staticClass: "bg-secondary" }),
-      _vm._v(" "),
-      _c("td", { staticClass: "bg-secondary" }, [
-        _c("form", { staticClass: "form-inline" }, [
-          _c("input", {
-            staticClass: "form-control mr-sm-2 w-50 border-right-1",
-            attrs: {
-              width: "7",
-              type: "search",
-              placeholder: "Введите фио",
-              "aria-label": "Search"
-            }
-          }),
-          _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-outline-success",
-              attrs: { type: "submit" }
-            },
-            [_vm._v("Найти")]
-          )
-        ])
-      ]),
-      _vm._v(" "),
-      _c("td", { staticClass: "bg-secondary" }, [
-        _c("form", { staticClass: "form-inline" }, [
-          _c("input", {
-            staticClass: "form-control mr-sm-2 w-50",
-            attrs: {
-              type: "search",
-              placeholder: "Введите должность",
-              "aria-label": "Search"
-            }
-          }),
-          _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-outline-success",
-              attrs: { type: "submit" }
-            },
-            [_vm._v("Найти")]
-          )
-        ])
-      ]),
-      _vm._v(" "),
-      _c("td", { staticClass: "bg-secondary" }, [
-        _c("form", { staticClass: "form-inline" }, [
-          _c("input", {
-            staticClass: "form-control mr-sm-2 w-50",
-            attrs: {
-              type: "date",
-              placeholder: "Введите дату",
-              "aria-label": "Search"
-            }
-          }),
-          _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-outline-success",
-              attrs: { type: "submit" }
-            },
-            [_vm._v("Найти")]
-          )
-        ])
-      ]),
-      _vm._v(" "),
-      _c("td", { staticClass: "bg-secondary" }, [
-        _c("form", { staticClass: "form-inline" }, [
-          _c("input", {
-            staticClass: "form-control mr-sm-2 w-50",
-            attrs: {
-              type: "number",
-              placeholder: "Введите сумму",
-              "aria-label": "Search"
-            }
-          }),
-          _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-outline-success",
-              attrs: { type: "submit" }
-            },
-            [_vm._v("Найти")]
-          )
-        ])
-      ]),
-      _vm._v(" "),
-      _c("td", { staticClass: "bg-secondary" }, [
-        _c("form", { staticClass: "form-inline" }, [
-          _c("input", {
-            staticClass: "form-control mr-sm-2 w-50",
-            attrs: {
-              type: "search",
-              placeholder: "Введите отдел",
-              "aria-label": "Search"
-            }
-          }),
-          _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-outline-success",
-              attrs: { type: "submit" }
-            },
-            [_vm._v("Найти")]
-          )
-        ])
-      ]),
-      _vm._v(" "),
-      _c("td", { staticClass: "bg-secondary" }),
-      _vm._v(" "),
-      _c("td", { staticClass: "bg-secondary" }, [
-        _c(
-          "button",
-          { staticClass: "btn btn-success", attrs: { type: "button" } },
-          [_vm._v("+ Добавить сотрудника")]
-        )
-      ])
+    return _c("td", { staticClass: "bg-secondary" }, [
+      _c(
+        "button",
+        { staticClass: "btn btn-success", attrs: { type: "button" } },
+        [_vm._v("+ Добавить сотрудника")]
+      )
     ])
   }
 ]

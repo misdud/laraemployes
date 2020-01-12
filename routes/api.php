@@ -29,6 +29,7 @@ Route::resource('/supervisor', 'Api\HeadEnterpController')
     ->only(['index', 'show']);
 
 Route::get('/employees/sortfio', 'Api\EmployeController@sortFio');
+Route::get('/employees/search', 'Api\EmployeController@search');
 Route::post('/employees/storephotos', 'Api\EmployeController@storPhoto');
 Route::get('/employees/headdeparts', 'Api\EmployeController@getHeadDepart');
 Route::get('/employees/positions', 'Api\EmployeController@getPosition');

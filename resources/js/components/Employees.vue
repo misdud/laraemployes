@@ -63,6 +63,7 @@
               <th scope="col">
                 ФИО
                 <a v-on:click="sortFioData" href="#">&#8659;</a>
+                <a v-on:click="sortOrder" href="#">&#8657;</a>
               </th>
               <th scope="col">
                 Должность
@@ -208,6 +209,8 @@ export default {
   name: "Employees",
   data() {
     return {
+      keySort:[],
+      order: "asc",
       positions: [],
       selectedPositEmpl: "",
       headDepartametns: [],
@@ -233,7 +236,6 @@ export default {
   },
   watch: {
     keywords(after, before) {
-      //   this.selectedPositEmpl = "";
       this.fetchDataSearch();
     },
     selectedPositEmpl(after1, before1) {
@@ -242,14 +244,20 @@ export default {
     },
     saerchDate(after2, before2) {
       this.fetchDataSearch();
-      //console.log(after2, before2);
-      //return;
     },
     saerchSalary(after3, before3) {
       this.fetchDataSearch();
     },
     selectedDepart(after4, before4) {
       this.fetchDataSearch();
+    },
+
+    //--for-----sort
+    keySort(after5, before5){
+      this.fetchDataErase();
+    },
+     order(after6, before6){
+      this.fetchDataErase();
     }
   },
 
@@ -272,7 +280,7 @@ export default {
         });
     },
     fetchDataSearch(pagi) {
-      console.log(this.saerchSalary);
+      console.log(this.keySort, '1test')
       pagi = pagi || "/api/employees/search";
       axios
         .get(pagi, {
@@ -281,7 +289,9 @@ export default {
             selectedPosit: this.selectedPositEmpl,
             saerchDate: this.saerchDate,
             saerchSalary: this.saerchSalary,
-            selectedDepart: this.selectedDepart
+            selectedDepart: this.selectedDepart,
+            keySort: this.keySort,
+            order: this.order
           }
         })
         .then(response => {
@@ -313,16 +323,33 @@ export default {
         });
     },
     sortFioData() {
+          this.keySort = "full_name";
+          this.order = "asc";
+
+
+    },
+    sortOrder(){
+           this.order = 'desc';
+    },
+      fetchDataErase(pagi) {
+        console.log(this.keySort)
+      pagi = pagi || "/api/employees/erases";
       axios
-        .get("/api/employees/sortfio")
+        .get(pagi, {
+          params: {
+            keySort: this.keySort,
+            //---test
+            order: this.order
+          }
+        })
         .then(response => {
-          this.employees = response.data.data;
+          this.employees = response.data;
         })
         .catch(error => {
           this.erorrMy = true;
           this.erorrMsg = error;
         });
-    }
+    },
   }
 };
 </script>

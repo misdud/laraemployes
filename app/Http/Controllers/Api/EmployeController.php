@@ -34,18 +34,14 @@ class EmployeController extends Controller
         return  EmployeResource::collection($employes);
     }
 
-    public function sortFio()
+    public function erase(Request $request)
     {
-
-        $positionHeadDepartament = Position::select('id')
-            ->where('name_position', 'Начальник отдела')->first();
-
+         $sortKey = $request->keySort;
+         $order = (string)$request->order;
         return  EmployeResource::collection(
-            Employe::with('position', 'department')
-                ->where('id_positione', '<>', $positionHeadDepartament->id)
-                ->orderBy('full_name', 'desc')
-                ->paginate(5)
-        );
+                Employe::with('position', 'department')
+                              ->orderBy($sortKey, $order)
+                              ->paginate(4));
     }
 
     /**
@@ -189,6 +185,16 @@ class EmployeController extends Controller
 
     public function search(Request $request)
     {
+        //----for----sort
+        if(!empty($request->keySort)){
+            $keySort = $request->keySort;
+        }else{
+            $keySort = 'full_name';
+        }
+
+        //------for-----order------soft
+            $order = $request->order;
+
         //----search --fio and position
         if (!empty($request->keywords) && !empty($request->selectedPosit)) {
             $keyword = $request->keywords;
@@ -198,7 +204,7 @@ class EmployeController extends Controller
             $employes = Employe::with('position', 'department')
                 ->where('full_name', 'like',  $keyword . '%')
                 ->where('id_positione', $positionId->id)
-                // ->orderBy($order)
+                ->orderBy($keySort, $order)
                 ->paginate(10);
 
             return  EmployeResource::collection($employes);
@@ -208,8 +214,7 @@ class EmployeController extends Controller
             $keyword = $request->keywords;
             $employes = Employe::with('position', 'department')
                 ->where('full_name', 'like',  $keyword . '%')
-
-                // ->orderBy($order)
+                ->orderBy($keySort, $order )
                 ->paginate(10);
 
             return  EmployeResource::collection($employes);
@@ -222,7 +227,7 @@ class EmployeController extends Controller
 
             $employes = Employe::with('position', 'department')
                 ->where('id_positione', $positionId->id)
-                //->orderBy('full_name')
+                ->orderBy($keySort, $order )
                 ->paginate(10);
 
             return  EmployeResource::collection($employes);
@@ -231,7 +236,7 @@ class EmployeController extends Controller
             $dateMy = date("Y-m-d", strtotime($request->saerchDate));
             $employes = Employe::with('position', 'department')
                 ->where('employment', ">=",  $dateMy)
-                ->orderBy('employment')
+                ->orderBy($keySort, $order)
                 ->paginate(10);
             return  EmployeResource::collection($employes);
 
@@ -245,7 +250,7 @@ class EmployeController extends Controller
 
             $employes = Employe::with('position', 'department')
                 ->whereIn('id_positione', $searhSalaryId)
-                ->orderBy('id_positione', 'desc', 'ratio')
+                ->orderBy('id_positione', $order)
                 ->paginate(10);
             return  EmployeResource::collection($employes);
 
@@ -257,7 +262,7 @@ class EmployeController extends Controller
 
             $employes = Employe::with('position', 'department')
                 ->where('id_departament', $departId->id)
-                ->orderBy('full_name')
+                ->orderBy($keySort, $order)
                 ->paginate(10);
             return  EmployeResource::collection($employes);
             //----------default-------
@@ -265,7 +270,7 @@ class EmployeController extends Controller
         } else {
 
             $employes = Employe::with('position', 'department')
-                ->orderBy('full_name')
+                ->orderBy($keySort, $order)
                 ->paginate(10);
 
             return  EmployeResource::collection($employes);

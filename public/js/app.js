@@ -2350,11 +2350,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "Employees",
   data: function data() {
     return {
+      keySort: [],
+      order: "asc",
       positions: [],
       selectedPositEmpl: "",
       headDepartametns: [],
@@ -2380,7 +2383,6 @@ __webpack_require__.r(__webpack_exports__);
   },
   watch: {
     keywords: function keywords(after, before) {
-      //   this.selectedPositEmpl = "";
       this.fetchDataSearch();
     },
     selectedPositEmpl: function selectedPositEmpl(after1, before1) {
@@ -2388,14 +2390,20 @@ __webpack_require__.r(__webpack_exports__);
       this.fetchDataSearch();
     },
     saerchDate: function saerchDate(after2, before2) {
-      this.fetchDataSearch(); //console.log(after2, before2);
-      //return;
+      this.fetchDataSearch();
     },
     saerchSalary: function saerchSalary(after3, before3) {
       this.fetchDataSearch();
     },
     selectedDepart: function selectedDepart(after4, before4) {
       this.fetchDataSearch();
+    },
+    //--for-----sort
+    keySort: function keySort(after5, before5) {
+      this.fetchDataErase();
+    },
+    order: function order(after6, before6) {
+      this.fetchDataErase();
     }
   },
   mounted: function mounted() {
@@ -2418,7 +2426,7 @@ __webpack_require__.r(__webpack_exports__);
     fetchDataSearch: function fetchDataSearch(pagi) {
       var _this2 = this;
 
-      console.log(this.saerchSalary);
+      console.log(this.keySort, '1test');
       pagi = pagi || "/api/employees/search";
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(pagi, {
         params: {
@@ -2426,7 +2434,9 @@ __webpack_require__.r(__webpack_exports__);
           selectedPosit: this.selectedPositEmpl,
           saerchDate: this.saerchDate,
           saerchSalary: this.saerchSalary,
-          selectedDepart: this.selectedDepart
+          selectedDepart: this.selectedDepart,
+          keySort: this.keySort,
+          order: this.order
         }
       }).then(function (response) {
         _this2.employees = response.data;
@@ -2454,10 +2464,25 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     sortFioData: function sortFioData() {
+      this.keySort = "full_name";
+      this.order = "asc";
+    },
+    sortOrder: function sortOrder() {
+      this.order = 'desc';
+    },
+    fetchDataErase: function fetchDataErase(pagi) {
       var _this5 = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/api/employees/sortfio").then(function (response) {
-        _this5.employees = response.data.data;
+      console.log(this.keySort);
+      pagi = pagi || "/api/employees/erases";
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(pagi, {
+        params: {
+          keySort: this.keySort,
+          //---test
+          order: this.order
+        }
+      }).then(function (response) {
+        _this5.employees = response.data;
       })["catch"](function (error) {
         _this5.erorrMy = true;
         _this5.erorrMsg = error;
@@ -38431,6 +38456,12 @@ var render = function() {
                       "a",
                       { attrs: { href: "#" }, on: { click: _vm.sortFioData } },
                       [_vm._v("⇓")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "a",
+                      { attrs: { href: "#" }, on: { click: _vm.sortOrder } },
+                      [_vm._v("⇑")]
                     )
                   ]),
                   _vm._v(" "),

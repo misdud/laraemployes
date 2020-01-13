@@ -8,52 +8,6 @@
       </p>
     </div>
     <div class="row" v-else>
-      <div class="row">
-        <div class="col bg-">
-          <p>Cортировать по:</p>
-          <div class="form-check form-check-inline">
-            <input
-              class="form-check-input"
-              type="radio"
-              name="inlineRadioOptions"
-              id="inlineRadio1"
-              value="option1"
-            />
-            <label class="form-check-label" for="inlineRadio1">По ФИО</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input
-              class="form-check-input"
-              type="radio"
-              name="inlineRadioOptions"
-              id="inlineRadio2"
-              value="option2"
-            />
-            <label class="form-check-label" for="inlineRadio2">По должности</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input
-              class="form-check-input"
-              type="radio"
-              name="inlineRadioOptions"
-              id="inlineRadio1"
-              value="option1"
-            />
-            <label class="form-check-label" for="inlineRadio1">Дате приёма</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input
-              class="form-check-input"
-              type="radio"
-              name="inlineRadioOptions"
-              id="inlineRadio2"
-              value="option2"
-            />
-            <label class="form-check-label" for="inlineRadio2">По размеру з\п</label>
-          </div>
-        </div>
-      </div>
-
       <br />
       <div class="row">
         <table class="table table-hover">
@@ -67,19 +21,23 @@
               </th>
               <th scope="col">
                 Должность
-                <a href="#">&#8659;</a>
+                <a v-on:click="sortPosition" href="#">&#8659;</a>
+                <a v-on:click="sortOrder" href="#">&#8657;</a>
               </th>
               <th scope="col">
                 Дата приёма
-                <a href="#">&#8659;</a>
+                <a v-on:click="sortDate" href="#">&#8659;</a>
+                <a v-on:click="sortOrder" href="#">&#8657;</a>
               </th>
               <th scope="col">
                 Размер з\п
-                <a href="#">&#8659;</a>
+                <a v-on:click="sortSalary" href="#">&#8659;</a>
+                <a v-on:click="sortOrder" href="#">&#8657;</a>
               </th>
               <th scope="col">
                 Начальник
-                <a href="#">&#8659;</a>
+                <a v-on:click="sortHead" href="#">&#8659;</a>
+                <a v-on:click="sortOrder" href="#">&#8657;</a>
               </th>
               <th scope="col">Фото</th>
               <th scope="col">Действие</th>
@@ -139,7 +97,7 @@
               <td>{{ item.name }}</td>
               <td>{{ item.position }}</td>
               <td>{{ item.employment }}</td>
-              <td>{{ Math.ceil(item.salary_position * item.ratio) }} руб.</td>
+              <td>{{ Math.ceil(item.salary_position * item.ratio) }} руб. ({{ item.ratio }})</td>
               <td>{{ item.name_head_depart }}</td>
               <td>{{ item.id }}</td>
               <td>
@@ -209,7 +167,7 @@ export default {
   name: "Employees",
   data() {
     return {
-      keySort:[],
+      keySort: [],
       order: "asc",
       positions: [],
       selectedPositEmpl: "",
@@ -238,26 +196,29 @@ export default {
     keywords(after, before) {
       this.fetchDataSearch();
     },
-    selectedPositEmpl(after1, before1) {
+    selectedPositEmpl() {
       this.saerchDate = "";
+      this.selectedDepart = "";
       this.fetchDataSearch();
     },
-    saerchDate(after2, before2) {
+    saerchDate() {
       this.fetchDataSearch();
     },
-    saerchSalary(after3, before3) {
+    saerchSalary() {
       this.fetchDataSearch();
     },
-    selectedDepart(after4, before4) {
+    selectedDepart() {
       this.fetchDataSearch();
     },
 
     //--for-----sort
-    keySort(after5, before5){
-      this.fetchDataErase();
+    keySort() {
+      this.fetchDataSearch();
+      //   this.fetchDataErase();
     },
-     order(after6, before6){
-      this.fetchDataErase();
+    order() {
+      this.fetchDataSearch();
+      //   this.fetchDataErase();
     }
   },
 
@@ -280,7 +241,6 @@ export default {
         });
     },
     fetchDataSearch(pagi) {
-      console.log(this.keySort, '1test')
       pagi = pagi || "/api/employees/search";
       axios
         .get(pagi, {
@@ -323,16 +283,30 @@ export default {
         });
     },
     sortFioData() {
-          this.keySort = "full_name";
-          this.order = "asc";
-
-
+      this.keySort = "full_name";
+      this.order = "asc";
     },
-    sortOrder(){
-           this.order = 'desc';
+    sortPosition() {
+      this.keySort = "id_positione";
+      this.order = "asc";
     },
-      fetchDataErase(pagi) {
-        console.log(this.keySort)
+    sortDate() {
+      this.keySort = "employment";
+      this.order = "asc";
+    },
+    sortSalary() {
+      this.keySort = "ratio";
+      this.order = "asc";
+    },
+    sortHead() {
+      this.keySort = "id_departament";
+      this.order = "asc";
+    },
+    sortOrder() {
+      this.order = "desc";
+    },
+    fetchDataErase(pagi) {
+      console.log(this.keySort);
       pagi = pagi || "/api/employees/erases";
       axios
         .get(pagi, {
@@ -349,7 +323,7 @@ export default {
           this.erorrMy = true;
           this.erorrMsg = error;
         });
-    },
+    }
   }
 };
 </script>

@@ -2309,48 +2309,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "Employees",
@@ -2385,25 +2343,26 @@ __webpack_require__.r(__webpack_exports__);
     keywords: function keywords(after, before) {
       this.fetchDataSearch();
     },
-    selectedPositEmpl: function selectedPositEmpl(after1, before1) {
+    selectedPositEmpl: function selectedPositEmpl() {
       this.saerchDate = "";
+      this.selectedDepart = "";
       this.fetchDataSearch();
     },
-    saerchDate: function saerchDate(after2, before2) {
+    saerchDate: function saerchDate() {
       this.fetchDataSearch();
     },
-    saerchSalary: function saerchSalary(after3, before3) {
+    saerchSalary: function saerchSalary() {
       this.fetchDataSearch();
     },
-    selectedDepart: function selectedDepart(after4, before4) {
+    selectedDepart: function selectedDepart() {
       this.fetchDataSearch();
     },
     //--for-----sort
-    keySort: function keySort(after5, before5) {
-      this.fetchDataErase();
+    keySort: function keySort() {
+      this.fetchDataSearch(); //   this.fetchDataErase();
     },
-    order: function order(after6, before6) {
-      this.fetchDataErase();
+    order: function order() {
+      this.fetchDataSearch(); //   this.fetchDataErase();
     }
   },
   mounted: function mounted() {
@@ -2426,7 +2385,6 @@ __webpack_require__.r(__webpack_exports__);
     fetchDataSearch: function fetchDataSearch(pagi) {
       var _this2 = this;
 
-      console.log(this.keySort, '1test');
       pagi = pagi || "/api/employees/search";
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(pagi, {
         params: {
@@ -2467,8 +2425,24 @@ __webpack_require__.r(__webpack_exports__);
       this.keySort = "full_name";
       this.order = "asc";
     },
+    sortPosition: function sortPosition() {
+      this.keySort = "id_positione";
+      this.order = "asc";
+    },
+    sortDate: function sortDate() {
+      this.keySort = "employment";
+      this.order = "asc";
+    },
+    sortSalary: function sortSalary() {
+      this.keySort = "ratio";
+      this.order = "asc";
+    },
+    sortHead: function sortHead() {
+      this.keySort = "id_departament";
+      this.order = "asc";
+    },
     sortOrder: function sortOrder() {
-      this.order = 'desc';
+      this.order = "desc";
     },
     fetchDataErase: function fetchDataErase(pagi) {
       var _this5 = this;
@@ -38440,8 +38414,6 @@ var render = function() {
           ])
         ])
       : _c("div", { staticClass: "row" }, [
-          _vm._m(0),
-          _vm._v(" "),
           _c("br"),
           _vm._v(" "),
           _c("div", { staticClass: "row" }, [
@@ -38465,13 +38437,65 @@ var render = function() {
                     )
                   ]),
                   _vm._v(" "),
-                  _vm._m(1),
+                  _c("th", { attrs: { scope: "col" } }, [
+                    _vm._v("\n              Должность\n              "),
+                    _c(
+                      "a",
+                      { attrs: { href: "#" }, on: { click: _vm.sortPosition } },
+                      [_vm._v("⇓")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "a",
+                      { attrs: { href: "#" }, on: { click: _vm.sortOrder } },
+                      [_vm._v("⇑")]
+                    )
+                  ]),
                   _vm._v(" "),
-                  _vm._m(2),
+                  _c("th", { attrs: { scope: "col" } }, [
+                    _vm._v("\n              Дата приёма\n              "),
+                    _c(
+                      "a",
+                      { attrs: { href: "#" }, on: { click: _vm.sortDate } },
+                      [_vm._v("⇓")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "a",
+                      { attrs: { href: "#" }, on: { click: _vm.sortOrder } },
+                      [_vm._v("⇑")]
+                    )
+                  ]),
                   _vm._v(" "),
-                  _vm._m(3),
+                  _c("th", { attrs: { scope: "col" } }, [
+                    _vm._v("\n              Размер з\\п\n              "),
+                    _c(
+                      "a",
+                      { attrs: { href: "#" }, on: { click: _vm.sortSalary } },
+                      [_vm._v("⇓")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "a",
+                      { attrs: { href: "#" }, on: { click: _vm.sortOrder } },
+                      [_vm._v("⇑")]
+                    )
+                  ]),
                   _vm._v(" "),
-                  _vm._m(4),
+                  _c("th", { attrs: { scope: "col" } }, [
+                    _vm._v("\n              Начальник\n              "),
+                    _c(
+                      "a",
+                      { attrs: { href: "#" }, on: { click: _vm.sortHead } },
+                      [_vm._v("⇓")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "a",
+                      { attrs: { href: "#" }, on: { click: _vm.sortOrder } },
+                      [_vm._v("⇑")]
+                    )
+                  ]),
                   _vm._v(" "),
                   _c("th", { attrs: { scope: "col" } }, [_vm._v("Фото")]),
                   _vm._v(" "),
@@ -38645,7 +38669,7 @@ var render = function() {
                   _vm._v(" "),
                   _c("td", { staticClass: "bg-secondary" }),
                   _vm._v(" "),
-                  _vm._m(5)
+                  _vm._m(0)
                 ])
               ]),
               _vm._v(" "),
@@ -38664,7 +38688,9 @@ var render = function() {
                     _c("td", [
                       _vm._v(
                         _vm._s(Math.ceil(item.salary_position * item.ratio)) +
-                          " руб."
+                          " руб. (" +
+                          _vm._s(item.ratio) +
+                          ")"
                       )
                     ]),
                     _vm._v(" "),
@@ -38825,124 +38851,6 @@ var render = function() {
   ])
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col bg-" }, [
-        _c("p", [_vm._v("Cортировать по:")]),
-        _vm._v(" "),
-        _c("div", { staticClass: "form-check form-check-inline" }, [
-          _c("input", {
-            staticClass: "form-check-input",
-            attrs: {
-              type: "radio",
-              name: "inlineRadioOptions",
-              id: "inlineRadio1",
-              value: "option1"
-            }
-          }),
-          _vm._v(" "),
-          _c(
-            "label",
-            { staticClass: "form-check-label", attrs: { for: "inlineRadio1" } },
-            [_vm._v("По ФИО")]
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "form-check form-check-inline" }, [
-          _c("input", {
-            staticClass: "form-check-input",
-            attrs: {
-              type: "radio",
-              name: "inlineRadioOptions",
-              id: "inlineRadio2",
-              value: "option2"
-            }
-          }),
-          _vm._v(" "),
-          _c(
-            "label",
-            { staticClass: "form-check-label", attrs: { for: "inlineRadio2" } },
-            [_vm._v("По должности")]
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "form-check form-check-inline" }, [
-          _c("input", {
-            staticClass: "form-check-input",
-            attrs: {
-              type: "radio",
-              name: "inlineRadioOptions",
-              id: "inlineRadio1",
-              value: "option1"
-            }
-          }),
-          _vm._v(" "),
-          _c(
-            "label",
-            { staticClass: "form-check-label", attrs: { for: "inlineRadio1" } },
-            [_vm._v("Дате приёма")]
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "form-check form-check-inline" }, [
-          _c("input", {
-            staticClass: "form-check-input",
-            attrs: {
-              type: "radio",
-              name: "inlineRadioOptions",
-              id: "inlineRadio2",
-              value: "option2"
-            }
-          }),
-          _vm._v(" "),
-          _c(
-            "label",
-            { staticClass: "form-check-label", attrs: { for: "inlineRadio2" } },
-            [_vm._v("По размеру з\\п")]
-          )
-        ])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("th", { attrs: { scope: "col" } }, [
-      _vm._v("\n              Должность\n              "),
-      _c("a", { attrs: { href: "#" } }, [_vm._v("⇓")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("th", { attrs: { scope: "col" } }, [
-      _vm._v("\n              Дата приёма\n              "),
-      _c("a", { attrs: { href: "#" } }, [_vm._v("⇓")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("th", { attrs: { scope: "col" } }, [
-      _vm._v("\n              Размер з\\п\n              "),
-      _c("a", { attrs: { href: "#" } }, [_vm._v("⇓")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("th", { attrs: { scope: "col" } }, [
-      _vm._v("\n              Начальник\n              "),
-      _c("a", { attrs: { href: "#" } }, [_vm._v("⇓")])
-    ])
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement

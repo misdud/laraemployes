@@ -29,6 +29,7 @@ class EmployeController extends Controller
         $employes = Employe::with('position', 'department')
             // ->where('id_positione','!=',$positionHeadDepartament->id)
             ->orderBy('full_name')
+            // --5 --for -- test
             ->paginate(5);
 
         return  EmployeResource::collection($employes);

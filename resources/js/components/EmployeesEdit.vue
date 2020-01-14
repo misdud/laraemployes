@@ -39,8 +39,9 @@
           </div>
           <div class="form-group">
             <label for="position">
-              Должность
+              Должность:
               <b>{{ employe.position}}</b>
+              Оклад: {{ employe.salary_position}}
             </label>
             <select class="form-control" id="position" v-model="selectedPosit">
               <option disabled value>Выберите должность</option>
@@ -70,7 +71,11 @@
               v-model="employe.ratio"
             />
           </div>
-          <p>Текущая зарплата: {{ Math.ceil(allSalary) }}</p>
+          <p>Текущая зарплата: {{ allSalary }}</p>
+          <p
+            v-if="isSalEditPost"
+            class="bg-info p-1 myclass"
+          >При смене должности: {{ salaryEdtPost}}</p>
           <div class="form-group">
             <label for="name_head_depart">
               Текущий начальник:
@@ -125,15 +130,45 @@ export default {
       selectedHedDep: "",
       headDeprts: "",
       selectedPosit: "",
-      selPosit: ""
+      selPosit: "",
+      salaryEditPost: "",
+      isSalEditPost: false
     };
   },
   computed: {
     allSalary: function() {
-      return this.employe.ratio * this.employe.salary_position;
+      return Math.ceil(this.employe.ratio * this.employe.salary_position);
+    },
+    salaryEdtPost() {
+      return Math.ceil(this.salaryEditPost * this.employe.ratio);
     }
   },
-  watch: {},
+  watch: {
+    selectedPosit() {
+      //console.log(this.selectedPosit);
+      this.getSalaryEdit(this.positions, this.selectedPosit);
+      this.isSalEditPost = true;
+    }
+  },
+  mounted() {
+    this.getHeadDepartament();
+    this.getPositions();
+  },
+
+  created() {
+    this.error = null;
+    axios
+      .get("/api/employees/" + this.$route.params.id + "/edit")
+      .then(response => {
+        this.employe = response.data;
+        this.loaded = true;
+      })
+      .catch(error => {
+        this.error = error.response.data || error.message;
+        console.log(error);
+      });
+  },
+
   methods: {
     onSubmit(event) {
       this.saving = true;
@@ -149,8 +184,8 @@ export default {
       } else {
         this.selPosit = this.employe.position;
       }
-      console.log(this.selPosit);
-      console.log(typeof this.employe.employment);
+      //   console.log(this.selPosit);
+      //   console.log(typeof this.employe.employment);
       axios
         .put("/api/employees/" + this.employe.id, {
           name: this.employe.name,
@@ -163,10 +198,11 @@ export default {
           name_head_depart: this.headDeprts
         })
         .then(response => {
-          console.log(response + "сотруд обн");
+          //console.log(response + "сотруд обн");
           this.employe = response.data;
           this.msg = "Сотрудник обновлён";
           this.status = true;
+          this.isSalEditPost = false;
         })
         .catch(error => {
           console.log(error);
@@ -226,29 +262,24 @@ export default {
             console.log(error);
           });
       }
-    }
-  },
-
-  mounted() {
-    this.getHeadDepartament();
-    this.getPositions();
-  },
-
-  created() {
-    this.error = null;
-    axios
-      .get("/api/employees/" + this.$route.params.id + "/edit")
-      .then(response => {
-        this.employe = response.data;
-        this.loaded = true;
-      })
-      .catch(error => {
-        this.error = error.response.data || error.message;
-        console.log(error);
+    },
+    getSalaryEdit(array, search) {
+      var value = "";
+      array.forEach(function(item) {
+        if (item.name_position === search) {
+          value = item.salary_position;
+        }
       });
+      //console.log(values);
+      this.salaryEditPost = value;
+    }
   }
 };
 </script>
 
 <style scoped>
+.myclass {
+  border: 1px solid yellow !important;
+  border-radius: 5px;
+}
 </style>

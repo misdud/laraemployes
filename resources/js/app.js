@@ -13,8 +13,10 @@ import App from "./components/App";
 
 //import route from './route'
 import router from "./routes";
+import Vuelidate from "vuelidate";
 
 Vue.use(VueRouter);
+Vue.use(Vuelidate);
 
 const app = new Vue({
     el: "#appmy",

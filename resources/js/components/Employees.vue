@@ -87,9 +87,9 @@
               </td>
               <td class="bg-secondary"></td>
               <td class="bg-secondary">
-                  <router-link  :to="{ name: 'employees.create' }" >
-                   <a class="btn btn-success mya">Добавить</a>
-          </router-link>
+                <router-link :to="{ name: 'employees.create' }">
+                  <a class="btn btn-success mya">Добавить</a>
+                </router-link>
               </td>
             </tr>
           </thead>
@@ -306,41 +306,37 @@ export default {
     },
     //----for -- sort -- order --desc
     sortOrderName() {
-       this.keySort = "full_name";
-       this.order = "desc";
+      this.keySort = "full_name";
+      this.order = "desc";
     },
-      sortOrderPos() {
+    sortOrderPos() {
       this.keySort = "id_positione";
       this.order = "desc";
     },
-      sortOrderEmpl() {
+    sortOrderEmpl() {
       this.keySort = "employment";
       this.order = "desc";
     },
-      sortOrderRatio() {
+    sortOrderRatio() {
       this.keySort = "ratio";
       this.order = "desc";
     },
-      sortOrderDepart() {
-       this.keySort = "id_departament";
+    sortOrderDepart() {
+      this.keySort = "id_departament";
       this.order = "desc";
-    },
-
-
-
-
+    }
   }
 };
 </script>
 
 
 <style scoped>
- .mya {
-    color:rgb(222, 236, 245);
- }
- .mya:hover{
-   color:rgb(255, 255, 255);
- }
+.mya {
+  color: black;
+}
+.mya:hover {
+  color: rgb(255, 255, 255);
+}
 </style>
 
 

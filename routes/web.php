@@ -20,16 +20,10 @@ Route::get('/', function () {
 });
 
 Route::get('test', function () {
-    $searhSalary = Position::where('salary_position', ">=", 1500)
-        ->where('salary_position', "<", 2500)
+    $orderDepart = Department::orderBy('name_head_depart')
         ->pluck("id")
         ->toArray();
-    // $arrId = [];
-    // foreach ($searhSalary as $salaryId) {
-    //     $arrId[] .= $salaryId->id;
-    // }
-    dump($searhSalary);
-    exit();
+
 });
 
 

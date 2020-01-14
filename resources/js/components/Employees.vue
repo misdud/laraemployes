@@ -17,27 +17,27 @@
               <th scope="col">
                 ФИО
                 <a v-on:click="sortFioData" href="#">&#8659;</a>
-                <a v-on:click="sortOrder" href="#">&#8657;</a>
+                <a v-on:click="sortOrderName" href="#">&#8657;</a>
               </th>
               <th scope="col">
                 Должность
                 <a v-on:click="sortPosition" href="#">&#8659;</a>
-                <a v-on:click="sortOrder" href="#">&#8657;</a>
+                <a v-on:click="sortOrderPos" href="#">&#8657;</a>
               </th>
               <th scope="col">
                 Дата приёма
                 <a v-on:click="sortDate" href="#">&#8659;</a>
-                <a v-on:click="sortOrder" href="#">&#8657;</a>
+                <a v-on:click="sortOrderEmpl" href="#">&#8657;</a>
               </th>
               <th scope="col">
                 Размер з\п
                 <a v-on:click="sortSalary" href="#">&#8659;</a>
-                <a v-on:click="sortOrder" href="#">&#8657;</a>
+                <a v-on:click="sortOrderRatio" href="#">&#8657;</a>
               </th>
               <th scope="col">
                 Начальник
                 <a v-on:click="sortHead" href="#">&#8659;</a>
-                <a v-on:click="sortOrder" href="#">&#8657;</a>
+                <a v-on:click="sortOrderDepart" href="#">&#8657;</a>
               </th>
               <th scope="col">Фото</th>
               <th scope="col">Действие</th>
@@ -87,7 +87,9 @@
               </td>
               <td class="bg-secondary"></td>
               <td class="bg-secondary">
-                <button type="button" class="btn btn-success">+ Добавить сотрудника</button>
+                  <router-link  :to="{ name: 'employees.create' }" >
+                   <a class="btn btn-success mya">Добавить</a>
+          </router-link>
               </td>
             </tr>
           </thead>
@@ -302,34 +304,43 @@ export default {
       this.keySort = "id_departament";
       this.order = "asc";
     },
-    sortOrder() {
+    //----for -- sort -- order --desc
+    sortOrderName() {
+       this.keySort = "full_name";
+       this.order = "desc";
+    },
+      sortOrderPos() {
+      this.keySort = "id_positione";
       this.order = "desc";
     },
-    fetchDataErase(pagi) {
-      console.log(this.keySort);
-      pagi = pagi || "/api/employees/erases";
-      axios
-        .get(pagi, {
-          params: {
-            keySort: this.keySort,
-            //---test
-            order: this.order
-          }
-        })
-        .then(response => {
-          this.employees = response.data;
-        })
-        .catch(error => {
-          this.erorrMy = true;
-          this.erorrMsg = error;
-        });
-    }
+      sortOrderEmpl() {
+      this.keySort = "employment";
+      this.order = "desc";
+    },
+      sortOrderRatio() {
+      this.keySort = "ratio";
+      this.order = "desc";
+    },
+      sortOrderDepart() {
+       this.keySort = "id_departament";
+      this.order = "desc";
+    },
+
+
+
+
   }
 };
 </script>
 
 
 <style scoped>
+ .mya {
+    color:rgb(222, 236, 245);
+ }
+ .mya:hover{
+   color:rgb(255, 255, 255);
+ }
 </style>
 
 

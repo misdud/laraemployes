@@ -58,17 +58,20 @@
                 <div v-if="!loaded">Загрузка...</div>
                 <form v-else v-on:submit.prevent="onSubmit($event)">
                     <div class="form-group">
-                        <label for="employe">
+                        <label for="employeName">
                             ФИО:
                             <b>{{ employeName ? employeName : "" }}</b>
                         </label>
                         <input
+                            type="text"
                             class="form-control"
-                            id="employe"
+                            id="employeName1"
                             placeholder="Введите ФИО"
                             v-model="employeName"
+                            v-on:input="$v.employeName1.$touch()"
                         />
                     </div>
+                    <pre>{{ $v }}</pre>
                     <div class="form-group">
                         <label for="position">Должность:</label>
                         <select
@@ -124,17 +127,8 @@
                         <button
                             type="submit"
                             :disabled="saving"
-                            class="btn btn-primary"
-                        >
-                            Обновить
-                        </button>
-                        <button
-                            type="button"
-                            class="btn btn-outline-danger"
-                            v-on:click="deleteEmpoye()"
-                        >
-                            Удалить
-                        </button>
+                            class="btn btn-primary">Создать</button>
+                         <input v-on:click="isPositSelect = false" type="reset"  class="btn btn-outline-secondary" >
                     </div>
                 </form>
             </div>
@@ -144,6 +138,7 @@
 </template>
 <script>
 import axios from "axios";
+import { required } from 'vuelidate/lib/validators'
 export default {
     data() {
         return {
@@ -172,6 +167,13 @@ export default {
             isPositSelect: false
         };
     },
+    validations:{
+        employeName1: {
+            required: required
+
+        }
+
+    },
     computed: {
         salaryPost: function() {
             return Math.ceil(this.employeRatio * this.salaryEditPost);
@@ -184,6 +186,7 @@ export default {
         }
     },
     methods: {
+
         onSubmit(event) {
             this.saving = true;
 
@@ -261,8 +264,25 @@ export default {
             let Year = Data.getFullYear();
             let Month = Data.getMonth();
             let Day = Data.getDate();
+            let fMonth = '';
 
-            let today = Day + "-" + Month + "-" + Year;
+            switch (Month)
+			{
+			  case 0: fMonth="января"; break;
+			  case 1: fMonth="февраля"; break;
+			  case 2: fMonth="марта"; break;
+			  case 3: fMonth="апреля"; break;
+			  case 4: fMonth="мае"; break;
+			  case 5: fMonth="июня"; break;
+			  case 6: fMonth="июля"; break;
+			  case 7: fMonth="августа"; break;
+			  case 8: fMonth="сентября"; break;
+			  case 9: fMonth="октября"; break;
+			  case 10: fMonth="ноября"; break;
+			  case 11: fMonth="декабря"; break;
+			}
+
+            let today = Day + "/" + fMonth + "/" + Year;
             this.toDay = today;
         },
         getSalaryEdit(array, search) {
@@ -274,7 +294,13 @@ export default {
             });
             //console.log(values);
             this.salaryEditPost = value;
-        }
+        },
+        resetForm(){
+  
+            this.isPositSelect = false;
+            console.log( this.isPositSelect , '--1');
+
+        },
     },
 
     mounted() {

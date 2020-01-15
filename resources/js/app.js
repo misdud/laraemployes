@@ -7,19 +7,22 @@
 require("./bootstrap");
 
 window.Vue = require("vue");
+import Vuelidate from "vuelidate";
 import VueRouter from "vue-router";
 
-import App from "./components/App";
 
 //import route from './route'
 import router from "./routes";
-import Vuelidate from "vuelidate";
+
 
 Vue.use(VueRouter);
 Vue.use(Vuelidate);
+
+import App from "./components/App";
 
 const app = new Vue({
     el: "#appmy",
     components: { App },
     router
+       
 });

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 use App\Http\Resources\EmployeResource;
 use App\Http\Resources\HeadDepartResource;
@@ -64,8 +65,37 @@ class EmployeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'employeName' => 'required|string|min:5',
+            'position' => 'required',
+            'ratio' => 'numeric|min:1',
+            'departament' => 'required',
+            'test'=>'required'
+        ]);
+
+
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()->all(),
+            ]);
+        }else{
+            // Store the employe...
+
+            //for search id position
+        $namePosition = $request->position;
+        $positionId = Position::select('id')->where('name_position', $namePosition)->first();
+
+        }
+            //for search id departament
+        $nameHeadDepart = $request->departament;
+        $departamentId = Department::select('id')->where('name_head_depart', $nameHeadDepart)->first();
+
+  
+           
+    
+        
     }
+    
 
     /**
      * Display the specified resource.

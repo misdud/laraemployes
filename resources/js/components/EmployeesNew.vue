@@ -26,7 +26,10 @@
 
       <div class="col">
         <div v-if="status" class="alert alert-warning alert-dismissible" role="alert">
-          <strong>{{ msg }}!</strong>
+          <strong>{{ msg ? msg: '' }}</strong>
+          <ul>
+            <li v-for="error in errors">{{ error }}</li>
+          </ul>
           <button v-on:click="status = false" type="button" class="close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -51,18 +54,19 @@
             <div class="invalid-feedback" v-if="!$v.employeName.minLength">Минимум 5 символов</div>
           </div>
 
-          <pre>{{ $v.employeName }}</pre>
           <div class="form-group">
             <label for="position">Должность:</label>
-            <select class="form-control" id="position" v-model="selectedPosit">
-              <option disabled value>Выберите должность</option>
+            <select class="custom-select" 
+            :class="{'is-valid': $v.selectedPosit.required}"
+            required id="position" v-model="selectedPosit">
+              <option  selected disabled value="">Выберите должность</option>
               <option
                 v-for="(posit, index) in positions"
                 v-bind:key="index"
-              >{{ posit.name_position }}</option>
+                v-on:value="$v.selectedPosit.$touch()"
+              >{{ posit.name_position }}</option>                          
             </select>
           </div>
-
           <div class="form-group">
             <label for="employment">Дата приема: {{ toDay }}</label>
           </div>
@@ -84,25 +88,25 @@
           >Зарплата: {{ salaryPost ? salaryPost : "" }}</p>
           <div class="form-group">
             <label for="name_head_depart">Начальник:</label>
-            <select class="form-control" id="name_head_depart" v-model="selectedHedDep">
+            <select class="custom-select" 
+            :class="{'is-valid': $v.selectedHedDep.required}"
+            id="name_head_depart" v-model="selectedHedDep">
               <option disabled value>Выберите руководителя</option>
               <option
                 v-for="(head, index) in headDepartametns"
                 v-bind:key="index"
+                v-on:value="$v.selectedHedDep.$touch()"
               >{{ head.name_head_depart }}</option>
             </select>
           </div>
-          <div class="form-group">
-            <button type="submit" :disabled="saving" class="btn btn-primary">Создать</button>
-            <input
-              v-on:click="isPositSelect = false"
-              type="reset"
-              class="btn btn-outline-secondary"
-            />
-          </div>
+
+            <button type="submit" 
+            v-bind:disabled="$v.$invalid" 
+            class="btn btn-primary">Создать</button>
         </form>
       </div>
-      <div class="col"></div>
+      <div class="col"> 
+      </div>
     </div>
   </div>
 </template>
@@ -117,6 +121,7 @@ export default {
         photoLink: null,
         photoLinkDefault: "/storage/photos/no_photo.png"
       },
+      errors:[],
       status: false,
       msg: "",
       saving: null,
@@ -141,7 +146,14 @@ export default {
     employeName: {
       required: required,
       minLength: minLength(5)
+    },
+    selectedHedDep: {
+      required: required
+    },
+    selectedPosit:{
+      required: required
     }
+
   },
   computed: {
     salaryPost: function() {
@@ -159,21 +171,18 @@ export default {
       this.saving = true;
 
       axios
-        .put("/api/employees/" + this.employe.id, {
-          name: this.employe.name,
-          position: this.selPosit,
-          employment:
-            this.employe.employment == ""
-              ? this.employe.employment
-              : this.employe.employment,
-          ratio: this.employe.ratio,
-          name_head_depart: this.headDeprts
+        .post("/api/employees", {
+          employeName: this.employeName,
+          position: this.selectedPosit,
+          ratio: this.employeRatio,
+          departament: this.selectedHedDep, 
         })
         .then(response => {
-          console.log(response + "сотруд доб");
-          this.employe = response.data;
-          this.msg = "Сотрудник добавлен";
+          console.log("отправлено");
+          //this.msg = "Сотрудник добавлен";
+          this.errors = response.data.errors;
           this.status = true;
+          console.log(response.data.errors);
         })
         .catch(error => {
           console.log(error);
@@ -281,11 +290,8 @@ export default {
       });
       //console.log(values);
       this.salaryEditPost = value;
-    },
-    resetForm() {
-      this.isPositSelect = false;
-      console.log(this.isPositSelect, "--1");
     }
+
   },
 
   mounted() {
@@ -294,18 +300,6 @@ export default {
     this.getDate();
   },
 
-  created() {
-    this.error = null;
-    axios
-      .get("/api/employees/")
-      .then(response => {
-        this.employe = response.data;
-      })
-      .catch(error => {
-        this.error = error.response.data || error.message;
-        console.log(error);
-      });
-  }
 };
 </script>
 

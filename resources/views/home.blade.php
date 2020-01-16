@@ -7,9 +7,6 @@
             <div id="appmy">
                 <app></app>
 
-
-
-
             </div>
         </div>
     </div>

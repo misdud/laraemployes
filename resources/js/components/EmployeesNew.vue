@@ -56,15 +56,19 @@
 
           <div class="form-group">
             <label for="position">Должность:</label>
-            <select class="custom-select" 
-            :class="{'is-valid': $v.selectedPosit.required}"
-            required id="position" v-model="selectedPosit">
-              <option  selected disabled value="">Выберите должность</option>
+            <select
+              class="custom-select"
+              :class="{'is-valid': $v.selectedPosit.required}"
+              required
+              id="position"
+              v-model="selectedPosit"
+            >
+              <option selected disabled value>Выберите должность</option>
               <option
                 v-for="(posit, index) in positions"
                 v-bind:key="index"
                 v-on:value="$v.selectedPosit.$touch()"
-              >{{ posit.name_position }}</option>                          
+              >{{ posit.name_position }}</option>
             </select>
           </div>
           <div class="form-group">
@@ -88,9 +92,12 @@
           >Зарплата: {{ salaryPost ? salaryPost : "" }}</p>
           <div class="form-group">
             <label for="name_head_depart">Начальник:</label>
-            <select class="custom-select" 
-            :class="{'is-valid': $v.selectedHedDep.required}"
-            id="name_head_depart" v-model="selectedHedDep">
+            <select
+              class="custom-select"
+              :class="{'is-valid': $v.selectedHedDep.required}"
+              id="name_head_depart"
+              v-model="selectedHedDep"
+            >
               <option disabled value>Выберите руководителя</option>
               <option
                 v-for="(head, index) in headDepartametns"
@@ -100,13 +107,14 @@
             </select>
           </div>
 
-            <button type="submit" 
-            v-bind:disabled="$v.$invalid" 
-            class="btn btn-primary">Создать</button>
+          <button
+            type="submit"
+            v-bind:disabled="$v.$invalid || this.saving"
+            class="btn btn-primary"
+          >Создать</button>
         </form>
       </div>
-      <div class="col"> 
-      </div>
+      <div class="col"></div>
     </div>
   </div>
 </template>
@@ -121,7 +129,7 @@ export default {
         photoLink: null,
         photoLinkDefault: "/storage/photos/no_photo.png"
       },
-      errors:[],
+      errors: [],
       status: false,
       msg: "",
       saving: null,
@@ -150,10 +158,9 @@ export default {
     selectedHedDep: {
       required: required
     },
-    selectedPosit:{
+    selectedPosit: {
       required: required
     }
-
   },
   computed: {
     salaryPost: function() {
@@ -175,14 +182,14 @@ export default {
           employeName: this.employeName,
           position: this.selectedPosit,
           ratio: this.employeRatio,
-          departament: this.selectedHedDep, 
+          departament: this.selectedHedDep
         })
         .then(response => {
           console.log("отправлено");
-          //this.msg = "Сотрудник добавлен";
           this.errors = response.data.errors;
           this.status = true;
-          console.log(response.data.errors);
+          this.msg = response.data.msg;
+          console.log(response.data.msg);
         })
         .catch(error => {
           console.log(error);
@@ -291,15 +298,13 @@ export default {
       //console.log(values);
       this.salaryEditPost = value;
     }
-
   },
 
   mounted() {
     this.getHeadDepartament();
     this.getPositions();
     this.getDate();
-  },
-
+  }
 };
 </script>
 

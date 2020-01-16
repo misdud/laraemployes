@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 use App\Http\Resources\EmployeResource;
 use App\Http\Resources\HeadDepartResource;
@@ -70,7 +71,7 @@ class EmployeController extends Controller
             'position' => 'required',
             'ratio' => 'numeric|min:1',
             'departament' => 'required',
-            'test'=>'required'
+            // 'test'=>'required'
         ]);
 
 
@@ -82,20 +83,38 @@ class EmployeController extends Controller
             // Store the employe...
 
             //for search id position
-        $namePosition = $request->position;
-        $positionId = Position::select('id')->where('name_position', $namePosition)->first();
+          $namePosition = $request->position;
+          $positionId = Position::select('id')->where('name_position', $namePosition)->first();
 
         }
             //for search id departament
-        $nameHeadDepart = $request->departament;
-        $departamentId = Department::select('id')->where('name_head_depart', $nameHeadDepart)->first();
+           $nameHeadDepart = $request->departament;
+           $departamentId = Department::select('id')->where('name_head_depart', $nameHeadDepart)->first();
 
-  
-           
-    
-        
+
+            // $employes = new Employe;
+            // $employes->full_name = $request->employeName;
+            // $employes->employment  = date("Y-m-d");
+            // $employes->ratio = $request->ratio;
+            // $employes->id_departament = $departamentId->id;
+            // $employes->id_positione = $positionId->id;
+            // $employes->save();
+
+            //---create it if it doesn't exist
+            Employe::firstOrCreate([
+                'full_name' => $request->employeName,
+                'employment'  => date("Y-m-d"),
+                'ratio' => $request->ratio,
+                'id_departament' => $departamentId->id,
+                'id_positione' => $positionId->id
+
+            ]);
+            return response()->json([
+                'msg' => 'Cотрудник добавлен']);
+
+
     }
-    
+
 
     /**
      * Display the specified resource.

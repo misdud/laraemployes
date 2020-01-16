@@ -92,14 +92,6 @@ class EmployeController extends Controller
            $departamentId = Department::select('id')->where('name_head_depart', $nameHeadDepart)->first();
 
 
-            // $employes = new Employe;
-            // $employes->full_name = $request->employeName;
-            // $employes->employment  = date("Y-m-d");
-            // $employes->ratio = $request->ratio;
-            // $employes->id_departament = $departamentId->id;
-            // $employes->id_positione = $positionId->id;
-            // $employes->save();
-
             //---create it if it doesn't exist
             Employe::firstOrCreate([
                 'full_name' => $request->employeName,

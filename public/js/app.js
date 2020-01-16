@@ -39559,8 +39559,8 @@ var render = function() {
                 _vm._v(" "),
                 _c(
                   "ul",
-                  _vm._l(_vm.errors, function(error) {
-                    return _c("li", [_vm._v(_vm._s(error))])
+                  _vm._l(_vm.errors, function(error, index) {
+                    return _c("li", { key: index }, [_vm._v(_vm._s(error))])
                   }),
                   0
                 ),

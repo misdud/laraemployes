@@ -28,7 +28,7 @@
         <div v-if="status" class="alert alert-warning alert-dismissible" role="alert">
           <strong>{{ msg ? msg: '' }}</strong>
           <ul>
-            <li v-for="error in errors">{{ error }}</li>
+            <li v-for="(error,index)  in errors" v-bind:key="index">{{ error }}</li>
           </ul>
           <button v-on:click="status = false" type="button" class="close">
             <span aria-hidden="true">&times;</span>

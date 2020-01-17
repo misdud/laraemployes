@@ -220,11 +220,28 @@ class EmployeController extends Controller
     public function storPhoto(Request $request)
     {
 
-        //$path = $request->file('file')->store('/public/photos');
+        // $path = Storage::putFile('/public/photos', $request->file('file'));
+        // return $path;
 
-        $path = Storage::putFile('/public/photos', $request->file('file'));
-        return $path;
+
+        $name = $request->file('file')->getClientOriginalName();
+        $extension = $request->file('file')->extension();
+        $size = $request->file('file')->getClientSize();
+        
+        if(($extension == 'jpg' || $extension == 'jpeg') && $size < 625000 ){
+
+            $path = Storage::putFileAs('/public/photos', $request->file('file'),  $name.'.jpeg');
+            return response()->json(['errorPhoto' =>'Фото загружено!'], 200);
+            // return $path;
+
+        }else{
+
+            return response()->json(['errorPhoto' =>'Фото не подходит по условиям']);
+        }
+
     }
+
+
 
     public function search(Request $request)
     {

@@ -101,7 +101,7 @@
               <td>{{ item.employment }}</td>
               <td>{{ Math.ceil(item.salary_position * item.ratio) }} руб. ({{ item.ratio }})</td>
               <td>{{ item.name_head_depart }}</td>
-              <td>{{ item.id }}</td>
+              <td><img :src="'/storage/photos/'+item.id+'.jpeg'"  title="фото" height="40px" width="35 px" /></td>
               <td>
                 <button type="button" class="btn btn-outline-secondary">
                   <router-link :to="{ name: 'employees.edit', params: { id: item.id  }}">

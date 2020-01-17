@@ -7,18 +7,22 @@
       <div class="col"></div>
       <div class="col border">
         <form>
-          <div class="form-group">
-            <label for="file" class="pt-3">Фото сотрудника:</label>
+          <div class="custom-file">
+
             <br />
-            <img v-if="photo.photoLink" :src="photo.photoLink" height="240 px" width="240 px" />
-            <img v-else :src="photo.photoLinkDefault" height="240 px" width="240 px" />
+            <div><img v-if="photo.photoLink" :src="photo.photoLink" height="240 px" width="240 px" />
+            <img v-else :src="photo.photoLinkDefault+employe.id+'.jpeg'" height="240 px" width="240 px" /></div>
             <input
               type="file"
               id="file"
               ref="file"
               v-on:change="onFileSelected"
-              class="form-control-file mt-3"
+              class="custom-file-input"
             />
+            <label for="file" class="custom-file-label myclassPhoto">Выберите фото:</label>
+            <p class="border mt-5 p-2">Поддерживаемые форматы для загрузки: jpg, jepg<br />
+            размер не более 5 мб.</p>
+             <div class="border pl-2 pr-2"> {{ infoPhoto }}</div>
             <button v-on:click="onUpload" type="button" class="btn btn-primary mt-3">Загрузить</button>
           </div>
         </form>
@@ -109,8 +113,10 @@ export default {
       photo: {
         photoDat: null,
         photoLink: null,
-        photoLinkDefault: "/storage/photos/no_photo.png"
+        photoLinkDefault: "/storage/photos/",
       },
+      infoPhoto: null,
+
       status: false,
       msg: "",
       saving: null,
@@ -218,11 +224,12 @@ export default {
     onUpload() {
       let settings = { headers: { "Content-Type": "multipart/form-data" } };
       const formData = new FormData();
-      formData.append("file", this.photo.photoDat, this.photo.photoDat.name);
+      formData.append("file", this.photo.photoDat, this.employe.id);
       axios
         .post("/api/employees/storephotos", formData, settings)
         .then(response => {
-          console.log(response);
+          console.log(response.data.errorPhoto);
+          this.infoPhoto = response.data.errorPhoto;
         })
         .catch(response => {
           console.log(response);
@@ -281,5 +288,8 @@ export default {
 .myclass {
   border: 1px solid yellow !important;
   border-radius: 5px;
+}
+.myclassPhoto {
+  margin-top: 280px;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="row ml-2 mr-2">
     <div v-if="erorrMy">
       <p>
         {{ erorrMsg }}
@@ -8,7 +8,7 @@
       </p>
     </div>
     <div class="row" v-else>
-      <br />
+      <app-redistr v-bind:nameHeads="headDepartametns"></app-redistr>
       <div class="row">
         <table class="table table-hover">
           <thead class="thead-dark">
@@ -101,7 +101,14 @@
               <td>{{ item.employment }}</td>
               <td>{{ Math.ceil(item.salary_position * item.ratio) }} руб. ({{ item.ratio }})</td>
               <td>{{ item.name_head_depart }}</td>
-              <td><img :src="'/storage/photos/'+item.id+'.jpeg'"  title="фото" height="40px" width="35 px" /></td>
+              <td>
+                <img
+                  :src="'/storage/photos/'+item.id+'.jpeg'"
+                  title="фото"
+                  height="40px"
+                  width="35 px"
+                />
+              </td>
               <td>
                 <button type="button" class="btn btn-outline-secondary">
                   <router-link :to="{ name: 'employees.edit', params: { id: item.id  }}">
@@ -114,13 +121,13 @@
         </table>
 
         <div class="row">
-          <div class="col-md-8">
+          <div class="col">
             <nav>
               <ul class="pagination">
                 <li v-bind:class="{disabled:!employees.links.first}" class="page-item">
                   <a
                     href="#"
-                    v-on:click="fetchData(employees.links.first)"
+                    v-on:click="fetchDataSearch(employees.links.first)"
                     class="page-link"
                   >&laquo;</a>
                 </li>
@@ -152,8 +159,9 @@
             </nav>
           </div>
         </div>
-
-        <div class="col-md-4">
+      </div>
+      <div class="row">
+        <div class="col">
           <div>Страница : {{ employees.meta.from }} - {{ employees.meta.to }}</div>
           <div>Всего: {{ employees.meta.total}}</div>
         </div>
@@ -164,6 +172,7 @@
 
 <script>
 import axios from "axios";
+import EmployeRedistr from "./EmployeRedistr";
 
 export default {
   name: "Employees",
@@ -193,6 +202,9 @@ export default {
         }
       }
     };
+  },
+  components: {
+    appRedistr: EmployeRedistr
   },
   watch: {
     keywords(after, before) {

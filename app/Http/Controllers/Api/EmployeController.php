@@ -48,6 +48,46 @@ class EmployeController extends Controller
         );
     }
 
+    public function redistr(Request $request){
+
+        $validator = Validator::make($request->all(), [
+            'selectedHeadOf' => 'required',
+            'selectedHeadTo' => 'required'
+        ]);
+
+
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()->all(),
+            ]);
+        }else{
+            // Update  the employes...
+            //for search
+            $selectedHeadOf = $request->selectedHeadOf;
+            $selectedHeadTo = $request->selectedHeadTo;
+
+            if($selectedHeadOf == $selectedHeadTo){
+                return response()->json(['message' => 'ошибка, измените руководителя']);
+            }
+
+            $selectedHeadOfId= Department::select('id')->where('name_head_depart', $selectedHeadOf)->first();
+
+            $employes = Employe::where('id_departament', $selectedHeadOfId->id)->get();
+
+            if($employes->count() == 0 ){
+                return response()->json(['message'=>'у руководителя нет сотрудников']);
+            }
+
+            $newHead = Department::where('name_head_depart', $selectedHeadTo)->first();
+
+            foreach($employes as $employe){
+                $employe->department()->associate($newHead)->save();
+            }
+
+            return response()->json(['message' => 'cотрудники перераспределены'],200);
+        }
+
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -81,7 +121,6 @@ class EmployeController extends Controller
             ]);
         }else{
             // Store the employe...
-
             //for search id position
           $namePosition = $request->position;
           $positionId = Position::select('id')->where('name_position', $namePosition)->first();
@@ -92,8 +131,8 @@ class EmployeController extends Controller
            $departamentId = Department::select('id')->where('name_head_depart', $nameHeadDepart)->first();
 
 
-            //---create it if it doesn't exist
-            Employe::firstOrCreate([
+            //---create
+             $id =  Employe::insertGetId([
                 'full_name' => $request->employeName,
                 'employment'  => date("Y-m-d"),
                 'ratio' => $request->ratio,
@@ -102,7 +141,8 @@ class EmployeController extends Controller
 
             ]);
             return response()->json([
-                'msg' => 'Cотрудник добавлен']);
+                'msg' => 'Cотрудник добавлен',
+                'last_insert_id'=>$id], 200);
 
 
     }
@@ -227,7 +267,7 @@ class EmployeController extends Controller
         $name = $request->file('file')->getClientOriginalName();
         $extension = $request->file('file')->extension();
         $size = $request->file('file')->getClientSize();
-        
+
         if(($extension == 'jpg' || $extension == 'jpeg') && $size < 625000 ){
 
             $path = Storage::putFileAs('/public/photos', $request->file('file'),  $name.'.jpeg');

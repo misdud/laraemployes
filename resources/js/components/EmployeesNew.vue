@@ -19,7 +19,13 @@
               v-on:change="onFileSelected"
               class="form-control-file mt-3"
             />
-            <button v-on:click="onUpload" type="button" class="btn btn-primary mt-3">Загрузить</button>
+            <div v-if="loadedPhoto">Фото загружено.</div>
+            <button
+              v-on:click="onUpload"
+              v-bind:disabled="photoDown"
+              type="button"
+              class="btn btn-primary mt-3"
+            >Загрузить</button>
           </div>
         </form>
       </div>
@@ -130,6 +136,8 @@ export default {
         photoLinkDefault: "/storage/photos/no_photo.png"
       },
       errors: [],
+      photoDown: true,
+      loadedPhoto: false,
       status: false,
       msg: "",
       saving: null,
@@ -137,6 +145,7 @@ export default {
       positions: [],
       error: null,
       loaded: false,
+      lastInsertId: null,
       employeName: "",
       employeRatio: 1,
 
@@ -185,11 +194,12 @@ export default {
           departament: this.selectedHedDep
         })
         .then(response => {
-          console.log("отправлено");
           this.errors = response.data.errors;
           this.status = true;
+          this.photoDown = false;
           this.msg = response.data.msg;
-          console.log(response.data.msg);
+          this.lastInsertId = response.data.last_insert_id;
+          console.log(response.data);
         })
         .catch(error => {
           console.log(error);
@@ -207,11 +217,12 @@ export default {
         headers: { "Content-Type": "multipart/form-data" }
       };
       const formData = new FormData();
-      formData.append("file", this.photo.photoDat, this.photo.photoDat.name);
+      formData.append("file", this.photo.photoDat, this.lastInsertId);
       axios
         .post("/api/employees/storephotos", formData, settings)
         .then(response => {
           console.log(response);
+          this.loadedPhoto = true;
         })
         .catch(response => {
           console.log(response);

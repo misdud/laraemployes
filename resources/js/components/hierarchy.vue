@@ -8,7 +8,7 @@
     <div v-if="error" class="error">
       <p>{{ error }}</p>
       <p>
-        <button @click.prevent="fetchData" type="button" class="btn btn-warning">Повторить</button>
+        <button @click.prevent="fetchData()" type="button" class="btn btn-warning">Повторить</button>
       </p>
     </div>
 
@@ -83,7 +83,8 @@ export default {
         })
         .catch(error => {
           this.loading = false;
-          this.error = error.response.data.message || error.message;
+          this.error = error;
+          console.log(error);
         });
     }
   }

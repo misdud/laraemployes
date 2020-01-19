@@ -25,8 +25,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 //     //return  new HeadEnterpResource(HeadEnterp::all());
 //})->name('head_enterp');
 
-Route::resource('/supervisor', 'Api\HeadEnterpController')
-    ->only(['index', 'show']);
+Route::get('/supervisor/departs', 'Api\HeadEnterpController@getDepart');
+Route::get('/supervisor/deputys', 'Api\HeadEnterpController@getDeputy');
+Route::get('/supervisor/directors', 'Api\HeadEnterpController@getDirector');
+Route::resource('/supervisor', 'Api\HeadEnterpController');
+    //->only(['index', 'show']);
 
 Route::put('/employees/redistrs', 'Api\EmployeController@redistr');
 //Route::get('/employees/erases', 'Api\EmployeController@erase');

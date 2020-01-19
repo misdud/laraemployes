@@ -13,28 +13,56 @@
     </div>
 
     <ul v-if="supervisor" class="list-group">
-      <li v-for="{ name, position } in supervisor" class="list-group-item">
-        {{ position}}:
-        ({{ name }})
-        <button
-          type="button"
-          class="btn btn-light ml-4"
-          v-on:click="getDirector"
-        >Показать подчинённых</button>
-        <button type="button" class="btn btn-light ml-2">Скрыть подчинённых</button>
+      <li v-for="(name, index ) in supervisor" v-bind:key="index" class="list-group-item">
+        {{ name.position}}:
+        <b>{{ name.name }}</b>
+        <span class="my">
+          <button
+            type="button"
+            class="btn btn-light ml-4"
+            v-on:click="getDirector()"
+          >Показать директоров</button>
+        </span>
       </li>
     </ul>
-
-    <li v-for="{ name, position } in director" class="list-group-item">
-      {{ position}}:
-      ({{ name }})
-      <button
-        type="button"
-        class="btn btn-light ml-4"
-      >Показать подчинённых</button>
-      <button type="button" class="btn btn-light ml-2">Скрыть подчинённых</button>
-    </li>
-
+    <ul class="list-group my-margin-1">
+      <li v-for="( director, index ) in directors" v-bind:key="index" class="list-group-item">
+        {{ director.position}}:
+        <b>{{ director.name }}</b>
+        <span class="my">
+          <button
+            type="button"
+            class="btn btn-light ml-1"
+            v-on:click="getDeputy(director.id)"
+          >Показать его заместителей</button>
+        </span>
+      </li>
+    </ul>
+    <ul class="list-group my-margin-2">
+      <li v-for="(deputy, index ) in deputys" v-bind:key="index" class="list-group-item">
+        {{ deputy.position}}:
+        <b>{{ deputy.name }}</b>
+        <span class="my">
+          <button
+            type="button"
+            class="btn btn-light ml-1"
+            v-on:click="getDepart(deputy.id)"
+          >Показать его начальников</button>
+          <button type="button" class="btn btn-light ml-1" v-on:click="clearData()">Вернуться</button>
+        </span>
+      </li>
+    </ul>
+    <ul class="list-group my-margin-3">
+      <li v-for="(depart, index ) in departs" v-bind:key="index" class="list-group-item">
+        {{ depart.position}}-
+        {{ depart.nameOtdel}}
+        <b>{{ depart.name }}</b>
+        <span class="my">
+          <!-- <button type="button" class="btn btn-light ml-1">Показать подчинённых</button>
+          <button type="button" class="btn btn-light ml-1" v-on:click="clearData()">Вернуться</button>-->
+        </span>
+      </li>
+    </ul>
     <!-- end lev 1-->
   </div>
 </template>
@@ -48,14 +76,16 @@ export default {
       loading: false,
       erorr: null,
       supervisor: null,
-      director: null
+      directors: null,
+      deputys: null,
+      departs: null
     };
   },
   created() {
     this.fetchData();
   },
   mounted() {
-    //this.getDirector();
+    this.getDirector();
   },
   methods: {
     fetchData() {
@@ -65,7 +95,7 @@ export default {
         .get("/api/supervisor")
         .then(response => {
           this.loading = false;
-          this.supervisor = response.data.data;
+          this.supervisor = response.data;
         })
         .catch(error => {
           this.loading = false;
@@ -73,19 +103,62 @@ export default {
         });
     },
     getDirector() {
-      this.error = this.supervisor = null;
-      this.loading = true;
+      //   this.error = this.supervisor = null;
+      //   this.loading = true;
       axios
-        .get("/api/supervisor/1")
+        .get("/api/supervisor/directors")
         .then(response => {
           this.loading = false;
-          this.supervisor = response.data.data;
+          this.directors = response.data;
+          this.deputys = [];
+          // console.log(response.data);
         })
         .catch(error => {
           this.loading = false;
           this.error = error;
           console.log(error);
         });
+    },
+    getDeputy(num) {
+      axios
+        .get("/api/supervisor/deputys", {
+          params: {
+            id: num
+          }
+        })
+        .then(response => {
+          this.loading = false;
+          this.deputys = response.data;
+          // console.log(response.data);
+          this.departs = [];
+        })
+        .catch(error => {
+          this.loading = false;
+          this.error = error;
+          console.log(error);
+        });
+    },
+    getDepart(num) {
+      //   this.loading = true;
+      axios
+        .get("/api/supervisor/departs", {
+          params: {
+            id: num
+          }
+        })
+        .then(response => {
+          this.loading = false;
+          this.departs = response.data;
+        })
+        .catch(error => {
+          this.loading = false;
+          this.error = error;
+          console.log(error);
+        });
+    },
+    clearData() {
+      this.deputys = [];
+      this.departs = [];
     }
   }
 };
@@ -93,4 +166,17 @@ export default {
 
 
 <style>
+.my {
+  float: right !important;
+}
+
+.my-margin-1 {
+  margin-left: 50px;
+}
+.my-margin-2 {
+  margin-left: 100px;
+}
+.my-margin-3 {
+  margin-left: 150px;
+}
 </style>

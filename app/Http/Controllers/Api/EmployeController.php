@@ -25,28 +25,26 @@ class EmployeController extends Controller
      */
     public function index()
     {
-        // $positionHeadDepartament = Position::select('id')
-        // ->where('name_position', 'Начальник отдела')->first();
+
 
         $employes = Employe::with('position', 'department')
             // ->where('id_positione','!=',$positionHeadDepartament->id)
             ->orderBy('full_name')
-            // --5 --for -- test
-            ->paginate(5);
+            ->paginate(10);
 
         return  EmployeResource::collection($employes);
     }
 
-    public function erase(Request $request)
-    {
-        $sortKey = $request->keySort;
-        $order = (string) $request->order;
-        return  EmployeResource::collection(
-            Employe::with('position', 'department')
-                ->orderBy($sortKey, $order)
-                ->paginate(4)
-        );
-    }
+    // public function erase(Request $request)
+    // {
+    //     $sortKey = $request->keySort;
+    //     $order = (string) $request->order;
+    //     return  EmployeResource::collection(
+    //         Employe::with('position', 'department')
+    //             ->orderBy($sortKey, $order)
+    //             ->paginate(4)
+    //     );
+    // }
 
     public function redistr(Request $request){
 

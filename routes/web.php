@@ -14,15 +14,19 @@
 use App\Department;
 use App\Employe;
 use App\Position;
+use App\Deputy;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
 Route::get('test', function () {
-    $orderDepart = Department::orderBy('name_head_depart')
-        ->pluck("id")
-        ->toArray();
+    $deputys = Deputy::where('id_director', 3)
+    ->with('position', 'director')
+    ->get();
+
+    dump($deputys);
+    exit();
 
 });
 

@@ -36,12 +36,17 @@ class Department extends Model
         return $this->belongsTo('App\Deputy', 'id_deputys', 'id');
     }
 
+    public function position(){
+        return $this->belongsTo('App\Position', 'id_posit_head', 'id');
+    }
+
     public function employes(){
         return $this->hasMany('App\Employe', 'id_departament', 'id');
     }
 
-    public function headDepartament(){
-        return $this->belongsTo('App\Department', 'id_departamentd', 'id');
-    }
+
+    // public function headDepartament(){
+    //     return $this->belongsTo('App\Department', 'id_departamentd', 'id');
+    // }
 
 }

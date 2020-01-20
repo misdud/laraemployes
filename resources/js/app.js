@@ -11,15 +11,22 @@ import Vuelidate from "vuelidate";
 import VueRouter from "vue-router";
 
 import App from "./components/App";
+import AppTree from "./components/AppTree";
 
 //import route from './route'
 import router from "./routes";
 
-Vue.use(VueRouter);
+Vue.use(VueRouter); 
 Vue.use(Vuelidate);
 
 const app = new Vue({
     el: "#appmy",
     components: { App },
     router
+});
+
+const app2 = new Vue({
+    el: "#appmy2",
+    components: { AppTree }
+
 });

@@ -1,14 +1,23 @@
 import VueRouter from "vue-router";
-import Hierarchyt from "./components/Hierarchy";
-import Employees from "./components/employees";
-import EmployeesEdit from "./components/EmployeesEdit";
+import Hierarchy from "./components/Hierarchy";
+//import Employees from "./components/employees";
+//import EmployeesEdit from "./components/EmployeesEdit";
 import EmployeesNew from "./components/EmployeesNew";
+
+//lasy_down_component
+const Employees = () => import(/* webpackChunkName: "employe" */'./components/employees')
+//lasy_down_route
+const EmployeesEdit = resolve => {
+    require.ensure(['./components/EmployeesEdit'], () => {
+      resolve(require('./components/EmployeesEdit.vue'))
+    })
+  }
 
 let routes = [
     {
         path: "/",
         name: "hierarchy",
-        component: Hierarchyt
+        component: Hierarchy
     },
     {
         path: "/employees",

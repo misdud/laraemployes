@@ -1,12 +1,11 @@
 <template>
   <div>
-    <!-- lev 1-->
-    <div v-if="loading" class="spinner-border" role="status">
+   <div v-if="loading" class="spinner-border" role="status">
       <span class="sr-only">Loading...</span>
     </div>
 
-    <div v-if="error" class="error">
-      <p>{{ error }}</p>
+ <div v-if="erorrMs" class="error">
+      <p>{{ erorrMs ? erorrMs: '' }}</p>
       <p>
         <button @click.prevent="fetchData()" type="button" class="btn btn-warning">Повторить</button>
       </p>
@@ -70,11 +69,11 @@
 <script>
 import axios from "axios";
 export default {
-  name: "Hierarchyt",
+  name: "Hierarchy",
   data() {
     return {
       loading: false,
-      erorr: null,
+      erorrMs: null,
       supervisor: null,
       directors: null,
       deputys: null,
@@ -82,28 +81,31 @@ export default {
     };
   },
   created() {
-    this.fetchData();
+   // this.fetchData();
   },
   mounted() {
+    this.fetchData();
     this.getDirector();
+  
   },
   methods: {
     fetchData() {
-      this.error = this.supervisor = null;
+       this.erorrMs = this.supervisor = null;
       this.loading = true;
       axios
         .get("/api/supervisor")
         .then(response => {
           this.loading = false;
           this.supervisor = response.data;
+          console.log(response.data)
         })
         .catch(error => {
           this.loading = false;
-          this.error = error.response.data.message || error.message;
+          this.errorM = error.response.data.message || error.message;
         });
     },
     getDirector() {
-      //   this.error = this.supervisor = null;
+      //  this.erorrMs = this.supervisor = null;
       //   this.loading = true;
       axios
         .get("/api/supervisor/directors")
@@ -115,7 +117,7 @@ export default {
         })
         .catch(error => {
           this.loading = false;
-          this.error = error;
+          this.erorrMs = error;
           console.log(error);
         });
     },
@@ -134,7 +136,7 @@ export default {
         })
         .catch(error => {
           this.loading = false;
-          this.error = error;
+          this.erorrMs = error;
           console.log(error);
         });
     },
@@ -152,7 +154,7 @@ export default {
         })
         .catch(error => {
           this.loading = false;
-          this.error = error;
+          this.erorrMs = error;
           console.log(error);
         });
     },

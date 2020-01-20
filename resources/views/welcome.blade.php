@@ -84,10 +84,16 @@
                     Laravel
                 </div>
 
+                <div id="appmy2">
+                        <app-tree></app-tree>
+                    </div>
+
                 <div class="links">
 
                 </div>
             </div>
         </div>
+      <!-- Scripts -->
+      <script src="{{ asset('js/app.js') }}" defer></script>
     </body>
 </html>

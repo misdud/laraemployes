@@ -28,8 +28,14 @@
     <div class="container-fluid">
       <router-view></router-view>
     </div>
+          <!-- <app-hierarchy></app-hierarchy> -->
   </div>
 </template>
 <script>
-export default {};
+import Hierarchy from "./Hierarchy";
+export default {
+  components: {
+    appHierarchy: Hierarchy
+  }
+};
 </script>

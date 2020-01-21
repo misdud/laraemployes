@@ -11,6 +11,7 @@ import Vuelidate from "vuelidate";
 import VueRouter from "vue-router";
 
 import App from "./components/App";
+
 //test
 //import AppTree from "./components/AppTree";
 
@@ -19,7 +20,7 @@ import AppTree from "./components/MainHierarchy";
 //import route from './route'
 import router from "./routes";
 
-Vue.use(VueRouter); 
+Vue.use(VueRouter);
 Vue.use(Vuelidate);
 
 const app = new Vue({
@@ -31,5 +32,4 @@ const app = new Vue({
 const app2 = new Vue({
     el: "#appmy2",
     components: { AppTree }
-
 });

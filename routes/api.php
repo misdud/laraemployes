@@ -25,6 +25,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 //     //return  new HeadEnterpResource(HeadEnterp::all());
 //})->name('head_enterp');
 
+Route::get('/supervisor/employes', 'Api\HeadEnterpController@getEmploye');
 Route::get('/supervisor/departs', 'Api\HeadEnterpController@getDepart');
 Route::get('/supervisor/deputys', 'Api\HeadEnterpController@getDeputy');
 Route::get('/supervisor/directors', 'Api\HeadEnterpController@getDirector');

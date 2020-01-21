@@ -8,10 +8,12 @@ use App\Http\Resources\HeadEnterpResource as HeadEnterpAs;
 use App\Http\Resources\DirectorResource;
 use App\Http\Resources\DeputysResource;
 use App\Http\Resources\DepartResource;
+use App\Http\Resources\EmployeResource;
 use App\HeadEnterp;
 use App\Director;
 use App\Deputy;
 use App\Department;
+use App\Employe;
 
 
 class HeadEnterpController extends Controller
@@ -45,7 +47,7 @@ class HeadEnterpController extends Controller
   public function getDeputy(Request $request)
   {
 
-             $id = $request->id; 
+             $id = $request->id;
             DirectorResource::withoutWrapping();
      $dir =  new DirectorResource(Director::with('position')->findOrFail($id));
 
@@ -58,7 +60,7 @@ class HeadEnterpController extends Controller
      DeputysResource::withoutWrapping();
      $collDeputys = DeputysResource::collection($deputys);
 
-     return response()->json(['dir' => $dir, 'collDeputys'=>$collDeputys]);
+     return response()->json(['dir' => $dir, 'collDeputys'=>$collDeputys],200);
 
     //  return DeputysResource::collection($deputys);
 
@@ -68,7 +70,7 @@ class HeadEnterpController extends Controller
 
   {
 
-    $id = $request->id; 
+    $id = $request->id;
     DeputysResource::withoutWrapping();
     $deputy =  new DeputysResource(Deputy::with('position')->findOrFail($id));
 
@@ -82,10 +84,27 @@ class HeadEnterpController extends Controller
     DepartResource::withoutWrapping();
     $departColl = DepartResource::collection($depart);
 
-    return response()->json(['depart' => $deputy, 'collDepart'=>$departColl]);
+    return response()->json(['depart' => $deputy, 'collDepart'=>$departColl],200);
 
     //return DepartResource::collection($depart);
   }
+    public function getEmploye(Request $request){
 
+        $id = $request->id;
+        DepartResource::withoutWrapping();
+        $headDepart =  new DepartResource(Department::with('position')->findOrFail($id));
+
+        $employes = Employe::with('position', 'department')
+        ->where('id_departament', $id)
+        ->orderBy('full_name')
+        ->get();
+
+        EmployeResource::withoutWrapping();
+        $empls =  EmployeResource::collection($employes);
+
+    return response()->json(['headDepart' => $headDepart, 'collEmploye'=>$empls],200);
+
+
+    }
 
 }

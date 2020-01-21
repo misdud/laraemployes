@@ -458,7 +458,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.myClass[data-v-fd9ca266] {\r\n  padding: 10px;\r\n  border: 1px solid #ccc;\r\n  border-radius: 5px;\n}\r\n", ""]);
+exports.push([module.i, "\n.myClass[data-v-fd9ca266] {\n  padding: 10px;\n  border: 1px solid #ccc;\n  border-radius: 5px;\n}\n", ""]);
 
 // exports
 
@@ -477,7 +477,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.mya[data-v-f37fc16c] {\r\n  color: black;\n}\n.mya[data-v-f37fc16c]:hover {\r\n  color: rgb(255, 255, 255);\n}\r\n", ""]);
+exports.push([module.i, "\n.mya[data-v-f37fc16c] {\n  color: black;\n}\n.mya[data-v-f37fc16c]:hover {\n  color: rgb(255, 255, 255);\n}\n", ""]);
 
 // exports
 

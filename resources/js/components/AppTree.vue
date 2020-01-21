@@ -17,6 +17,10 @@ export default {
           label: "A cool sub-folder 1111",
           children: [
             { label: "A cool sub-sub-folder 1" },
+            { label: "A cool sub-sub-folder 2" },
+            { label: "A cool sub-sub-folder 3" },
+            { label: "A cool sub-sub-folder 4" },
+
             { label: "A cool sub-sub-folder 2" }
           ]
         },

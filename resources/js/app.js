@@ -11,7 +11,10 @@ import Vuelidate from "vuelidate";
 import VueRouter from "vue-router";
 
 import App from "./components/App";
-import AppTree from "./components/AppTree";
+//test
+//import AppTree from "./components/AppTree";
+
+import AppTree from "./components/MainHierarchy";
 
 //import route from './route'
 import router from "./routes";

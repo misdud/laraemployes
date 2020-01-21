@@ -44,25 +44,47 @@ class HeadEnterpController extends Controller
 
   public function getDeputy(Request $request)
   {
+
+             $id = $request->id; 
+            DirectorResource::withoutWrapping();
+     $dir =  new DirectorResource(Director::with('position')->findOrFail($id));
+
+
      $idDirect = $request->id;
      $deputys = Deputy::where('id_director', $idDirect)
      ->with('position', 'director')
      ->get();
 
      DeputysResource::withoutWrapping();
-     return DeputysResource::collection($deputys);
+     $collDeputys = DeputysResource::collection($deputys);
+
+     return response()->json(['dir' => $dir, 'collDeputys'=>$collDeputys]);
+
+    //  return DeputysResource::collection($deputys);
 
   }
 
   public function getDepart(Request $request)
+
   {
+
+    $id = $request->id; 
+    DeputysResource::withoutWrapping();
+    $deputy =  new DeputysResource(Deputy::with('position')->findOrFail($id));
+
+
+
     $idDeputy = $request->id;
     $depart = Department::where('id_deputys', $idDeputy)
               ->with('deputy', 'position')
               ->get();
 
     DepartResource::withoutWrapping();
-    return DepartResource::collection($depart);
+    $departColl = DepartResource::collection($depart);
+
+    return response()->json(['depart' => $deputy, 'collDepart'=>$departColl]);
+
+    //return DepartResource::collection($depart);
   }
 
 

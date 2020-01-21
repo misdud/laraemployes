@@ -21,7 +21,7 @@ export default {
 
 <style>
 .tree-list ul {
-  padding-left: 16px;
-  margin: 6px 0;
+  padding-left: 15px;
+  margin: 5px 0;
 }
 </style>

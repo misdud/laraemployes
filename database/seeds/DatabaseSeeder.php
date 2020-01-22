@@ -16,22 +16,22 @@ class DatabaseSeeder extends Seeder
         //---------------
 
         //default
-        //$this->call(UsersTableSeeder::class);
+        $this->call(UsersTableSeeder::class);
 
         // 1 first-boot  PositionSeeder
-        //$this->call(PositionSeeder::class);
+        $this->call(PositionSeeder::class);
 
         // 2 second-boot  HeadEnterpriseSeeder
-        //$this->call(HeadEnterpriseSeeder::class);
+        $this->call(HeadEnterpriseSeeder::class);
 
         //3  DirectorSeeder
-        //$this->call(DirectorSeeder::class);
+        $this->call(DirectorSeeder::class);
 
         // 4 DeputySeeder
-        //$this->call(DeputySeeder::class);
+        $this->call(DeputySeeder::class);
 
         // 5 DepartmentSeeder
-        //$this->call(DepartmentSeeder::class);
+        $this->call(DepartmentSeeder::class);
 
         // 6 EmployeSeeder
         $this->call(EmployeSeeder::class);

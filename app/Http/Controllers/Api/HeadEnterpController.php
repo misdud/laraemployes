@@ -47,8 +47,8 @@ class HeadEnterpController extends Controller
   public function getDeputy(Request $request)
   {
 
-             $id = $request->id;
-            DirectorResource::withoutWrapping();
+     $id = $request->id;
+     DirectorResource::withoutWrapping();
      $dir =  new DirectorResource(Director::with('position')->findOrFail($id));
 
 
